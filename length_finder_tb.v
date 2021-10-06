@@ -38,11 +38,11 @@ module length_finder_tb ();
       #5
       $display("%b -> %d, expected %d", in, out, expected);
       in = 64'h44BBC00DEE44FFAA;
-      expected = 4'b0000;
+      expected = 4'b1000;
       #5
       $display("%b -> %d, expected %d", in, out, expected);
       in = 0;
-      expected = 4'b0000;
+      expected = 4'b1000;
       $display("%b -> %d, expected %d", in, out, expected);
    end
    
