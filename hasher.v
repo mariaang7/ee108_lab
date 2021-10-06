@@ -3,7 +3,7 @@ module hasher (
   input wire [3:0] data_len,
   output wire [31:0] hash
 );
-  reg dir;
+	wire dir = ^(data_len);
 	wire [31:0] final_state = out_six ^ out_seven;
 	wire [31:0] out_zero, out_one, out_two, out_three, out_four, out_five, out_six, out_seven;    // outputs of the single hash_rounds
 	wire [4:0] distance = final_state[4:0];
@@ -16,12 +16,15 @@ module hasher (
 	
   
   
-  	always @(*) begin
-    		case (data_len)
-	      	4'b0000 : dir = 1'b0;
-        	default : dir = 1'b1;
-		endcase
-	end
+  	//always @(*) begin
+    		//case (data_len)
+	      	//4'b0000 : dir = 1'b0;
+        	//default : dir = 1'b1;
+		//endcase
+	//end
+	
+	
+	
 		
 	    hash_round #(0) round_zero (.in_byte(data[0]), .in_state(32'h55555555), .out_state(out_zero));
             hash_round #(1) round_one (.in_byte(data[1]), .in_state(32'hAAAAAAAA), .out_state(out_one));
