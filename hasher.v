@@ -4,6 +4,9 @@ module hasher #(parameter ROUND) (
   output wire [31:0] hash
 );
   
+  always @(*) begin
+  end 
+  
   
   rotator #(WIDTH=32) final_rotator (.in(mixed_a), .direction(1'b1), .distance(ROUND), .out(rotated_mixed_a));
   
