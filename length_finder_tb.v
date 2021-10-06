@@ -11,21 +11,30 @@ module length_finder_tb ();
    initial begin
       in = 64'hAABBCCDDEEFFAA00;
       #5
+      $display("%b -> %d, expected %d", in, out, expected);
       in = 64'hAABBCCDDEEFFAA99;
       #5
+      $display("%b -> %d, expected %d", in, out, expected);
       in = 64'hAABBCCDDEEFF00AA;
       #5
+      $display("%b -> %d, expected %d", in, out, expected);
       in = 64'hAABBCCDDEE00FFAA;
       #5
+      $display("%b -> %d, expected %d", in, out, expected);
       in = 64'hAABBCC00EE00FFAA;
       #5
+      $display("%b -> %d, expected %d", in, out, expected);
       in = 64'h00BBCCDDEE44FFAA;
       #5
+      $display("%b -> %d, expected %d", in, out, expected);
       in = 64'h00BBCC00EE44FFAA;
       #5
+      $display("%b -> %d, expected %d", in, out, expected);
       in = 64'h44BBC00DEE44FFAA;
       #5
+      $display("%b -> %d, expected %d", in, out, expected);
       in = 0;
+      $display("%b -> %d, expected %d", in, out, expected);
    end
    
 endmodule
