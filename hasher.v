@@ -5,7 +5,7 @@ module hasher (
 );
   
   	wire dir;
-	wire final_state [31:0] = out_six ^ out_seven;
+	wire [31:0] final_state = out_six ^ out_seven;
 	wire [31:0] out_zero, out_one, out_two, out_three, out_four, out_five, out_six, out_seven;    // outputs of the single hash_rounds
 	
 	
@@ -30,7 +30,7 @@ end
 	    hash_round #(WIDTH=6) round_six (.in_byte(data[6]), .in_state(out_four), .out_state(out_six));
 	    hash_round #(WIDTH=7) round_seven (.in_byte(data[7]), .in_state(out_four), .out_state(out_seven));
 	    
- 	rotator #(WIDTH=32) final_rotator (.in(mixed_a), .direction(1'b1), .distance(ROUND), .out(rotated_mixed_a));
+	    rotator #(WIDTH=32) final_rotator (.in(final_state), .direction(dir), .distance(final_state[4:0]), .out());
   
   
 endmodule 
