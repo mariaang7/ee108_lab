@@ -1,7 +1,7 @@
 module hash_round #(parameter ROUND=8) (
 	input wire [7:0] in_byte,
 	input wire [31:0] in_state,
-	output wire [7:0] out_state
+	output wire [31:0] out_state
 );
    
 	// Declarations
