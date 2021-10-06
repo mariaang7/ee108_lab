@@ -16,10 +16,13 @@ assign in_byte = {data_len, data};
 	      4'b0000 : dir = 1'b0;
         default : dir = 1'b1
 	    endcase
-	 end
-  rotator #(WIDTH=32) final_rotator (.in(mixed_a), .direction(1'b1), .distance(ROUND), .out(rotated_mixed_a));
+end
+		
+ hash_round #(WIDTH=0) final_rotator (.in(mixed_a), .direction(1'b1), .distance(ROUND), .out(rotated_mixed_a));
+	    hash_round #(WIDTH=0) final_rotator (.in(mixed_a), .direction(1'b1), .distance(ROUND), .out(rotated_mixed_a));
+	    hash_round #(WIDTH=0) final_rotator (.in(mixed_a), .direction(1'b1), .distance(ROUND), .out(rotated_mixed_a));
 	    
-  rotator #(WIDTH=32) final_rotator (.in(mixed_a), .direction(1'b1), .distance(ROUND), .out(rotated_mixed_a));
+ rotator #(WIDTH=32) final_rotator (.in(mixed_a), .direction(1'b1), .distance(ROUND), .out(rotated_mixed_a));
   
   
 endmodule 
