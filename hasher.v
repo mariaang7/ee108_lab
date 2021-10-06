@@ -17,7 +17,8 @@ assign in_byte = {data_len, data};
         default : dir = 1'b1
 	    endcase
 	 end
-  
+  rotator #(WIDTH=32) final_rotator (.in(mixed_a), .direction(1'b1), .distance(ROUND), .out(rotated_mixed_a));
+	    
   rotator #(WIDTH=32) final_rotator (.in(mixed_a), .direction(1'b1), .distance(ROUND), .out(rotated_mixed_a));
   
   
