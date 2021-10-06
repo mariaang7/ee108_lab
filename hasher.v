@@ -5,7 +5,7 @@ module hasher #(parameter ROUND) (
 );
   
   
-  rotator #(WIDTH = 8) rotator_mix (.in(mixed_a), .direction(1'b1), .distance(ROUND), .out(rotated_mixed_a));
+  rotator #(WIDTH=32) final_rotator (.in(mixed_a), .direction(1'b1), .distance(ROUND), .out(rotated_mixed_a));
   
   
 endmodule 
