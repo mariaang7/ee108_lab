@@ -4,7 +4,7 @@ module hasher #(parameter ROUND) (
   output wire [31:0] hash
 );
   
-  assign 
+  wire data_len = 
   
   always @(*) begin
     
