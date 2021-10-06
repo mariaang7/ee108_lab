@@ -18,11 +18,16 @@ assign in_byte = {data_len, data};
 	    endcase
 end
 		
- hash_round #(WIDTH=0) final_rotator (.in(mixed_a), .direction(1'b1), .distance(ROUND), .out(rotated_mixed_a));
-	    hash_round #(WIDTH=0) final_rotator (.in(mixed_a), .direction(1'b1), .distance(ROUND), .out(rotated_mixed_a));
-	    hash_round #(WIDTH=0) final_rotator (.in(mixed_a), .direction(1'b1), .distance(ROUND), .out(rotated_mixed_a));
+		hash_round #(WIDTH=0) round_zero (.in(mixed_a), .direction(1'b1), .distance(ROUND), .out(rotated_mixed_a))
+		hash_round #(WIDTH=1) round_one (.in(mixed_a), .direction(1'b1), .distance(ROUND), .out(rotated_mixed_a));
+	    hash_round #(WIDTH=2) round_two (.in(mixed_a), .direction(1'b1), .distance(ROUND), .out(rotated_mixed_a));
+	    hash_round #(WIDTH=3) round_three (.in(mixed_a), .direction(1'b1), .distance(ROUND), .out(rotated_mixed_a));
+	    hash_round #(WIDTH=4) round_four (.in(mixed_a), .direction(1'b1), .distance(ROUND), .out(rotated_mixed_a));
+	    hash_round #(WIDTH=5) round_five (.in(mixed_a), .direction(1'b1), .distance(ROUND), .out(rotated_mixed_a));
+	    hash_round #(WIDTH=6) round_six (.in(mixed_a), .direction(1'b1), .distance(ROUND), .out(rotated_mixed_a));
+	    hash_round #(WIDTH=7) round_seven (.in(mixed_a), .direction(1'b1), .distance(ROUND), .out(rotated_mixed_a));
 	    
- rotator #(WIDTH=32) final_rotator (.in(mixed_a), .direction(1'b1), .distance(ROUND), .out(rotated_mixed_a));
+ 	rotator #(WIDTH=32) final_rotator (.in(mixed_a), .direction(1'b1), .distance(ROUND), .out(rotated_mixed_a));
   
   
 endmodule 
