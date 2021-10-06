@@ -8,9 +8,11 @@ module hasher (
 	wire [31:0] out_zero, out_one, out_two, out_three, out_four, out_five, out_six, out_seven;    // outputs of the single hash_rounds
 	wire [4:0] distance = final_state[4:0];
 	
+	wire [7:0] data_seven, data_six, data_five, data_four, data_three, data_two, data_one, data_zero;    // outputs of the single hash_rounds
+	
 	
   
-	assign in_byte = {data_len, data};
+	// assign in_byte = {data_len, data};
 	
   
   
