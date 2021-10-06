@@ -1,4 +1,5 @@
-module hasher (
+
+module verifier (
   input wire [63:0] username,
   input wire [63:0] password,
   output wire valid_out
@@ -9,13 +10,13 @@ module hasher (
   wire [2:0] cam_addr;
   wire cam_valid;
   wire out;
-  wire valid_out;
+
   
   
   
   length_finder password_length (.string(password), .length(password_data_len));
-  length_finder password_length (.string(username), .length(username_data_len));
-  hasher passwrd_hasher (.data(password), .data_len(output_data_len), .hash(a));
+  length_finder username_length (.string(username), .length(username_data_len));
+  hasher password_hasher (.data(password), .data_len(password_data_len), .hash(a));
   cam cam_username (.data_len(username_data_len), .data(username), .addr(cam_addr), .valid(cam_valid));
   hash_rom rom_password (.addr(cam_addr), .data(b));
   
