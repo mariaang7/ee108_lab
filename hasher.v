@@ -6,8 +6,9 @@ module hasher #(parameter ROUND) (
   
   wire dir;
   wire final_state [31:0];
-  wire
   
+assign in_byte = {data_len, data};
+	
   
   
   always @(*) begin
