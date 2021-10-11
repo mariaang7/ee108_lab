@@ -13,7 +13,7 @@ module float_add (
     wire [2:0] final_exp;
 
     big_number_first number (.aIn(aIn), .bIn(bIn), .aOut(greater number), .bOut(smaller_number));
-    shifter shift_exp (.in(bOut[4:0]), .dir(1), .dis(aOut[7:5] - bOut[7:5]), .out(shifted_output));
+    shifter shift_exp (.in(bOut[4:0]), .direction(1), .distance(aOut[7:5] - bOut[7:5]), .out(shifted_output));
     adder added_numbers (.a(aOut[4:0]), .b(bOut[4:0]), .sum(sum_ab), .cout(cout));
     shifter shift_mantissa (.in(sum_ab), .dir(1), .dis(cout), .out(shifted_mantissa));
     
