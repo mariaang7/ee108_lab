@@ -6,9 +6,9 @@ module shifter (
 );
 
   always @(*) begin
-    case (in)
-      0'b0: out = in << distance;
-      0'b1: out = in >> distance;
+    case (direction)
+      1'b0: out = in << distance;
+      1'b1: out = in >> distance;
     endcase
   end
 
