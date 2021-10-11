@@ -1,42 +1,44 @@
-module big_number_first_tb (input wire [7:0] aIn,
-                            input wire [7:0] bIn, 
-                            output wire [7:0] aOut,
-                            output wire [7:0] bOut
+module big_number_first_tb ();
+  
+  reg [7:0] aIn, bIn;
+  wire [7:0] aOut, bOut;
+  reg [7:0] expected_aOut, expected_bOut;
 
-);
 
 initial begin
         // Basic test case #1
         aIn = 8'b00000110;
-        expected_aIn = 8'b00000010;
-        expected_aOut = ;
+        bIn = 8'b10011010;
+        expected_aOut = 8'b10011010;
+        expected_bOut = 8'b00000110;
         #5
-        $display("%b -> %b, expected %b", in, out, expected);
-
+        $display("%b -> %b, expected %b", aIn, bIn, aOut, bOut, expected_aOut, expected_bOut);
+        
         // Basic test case #2
-        in = 8'b00100000;
-        expected = 8'b00100000;
+        aIn = 8'b00000001;
+        bIn = 8'b10000000;
+        expected_aOut = 8'b10000000;
+        expected_bOut = 8'b00000001;
         #5
-        $display("%b -> %b, expected %b", in, out, expected);
-
+        $display("%b -> %b, expected %b", aIn, bIn, aOut, bOut, expected_aOut, expected_bOut);
+  
         // Basic test case #3
-        in = 8'b01010100;
-        expected = 8'b00000100;
+        aIn = 8'b11000100;
+        bIn = 8'b10011010;
+        expected_aOut = 8'b11000100;
+        expected_bOut = 8'b10011010;
         #5
-        $display("%b -> %b, expected %b", in, out, expected);
-        
+        $display("%b -> %b, expected %b", aIn, bIn, aOut, bOut, expected_aOut, expected_bOut);
+  
         // Basic test case #4
-        in = 8'b01110000;
-        expected = 8'b00010000;
+        aIn = 8'b00001000;
+        bIn = 8'000001000;
+        expected_aOut = 8'b00001000;
+        expected_bOut = 8'b00001000;
         #5
-        $display("%b -> %b, expected %b", in, out, expected);
-        
-        // Basic test case #5
-        in = 8'b10000000;
-        expected = 8'b10000000;
-        #5
-        $display("%b -> %b, expected %b", in, out, expected);
-
+        $display("%b -> %b, expected %b", aIn, bIn, aOut, bOut, expected_aOut, expected_bOut);
+  
+  
     end
 
 
