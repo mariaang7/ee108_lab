@@ -7,8 +7,9 @@ module big_number_first_tb (input wire [7:0] aIn,
 
 initial begin
         // Basic test case #1
-        in = 8'b00000110;
-        expected = 8'b00000010;
+        aIn = 8'b00000110;
+        expected_aIn = 8'b00000010;
+        expected_aOut = ;
         #5
         $display("%b -> %b, expected %b", in, out, expected);
 
