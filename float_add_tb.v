@@ -6,38 +6,33 @@ module float_add_tb ();
   float_add dut (.aIn(aIn), .bIn(bIn), .result(out));
 
     initial begin
-        // Basic test case #1
-        in = 8'b00000110;
-        expected = 8'b00000010;
+        // Test case #1
+        aIn = 8'b00001000;
+        bIn = 8'b00000011;
+        expected = 8'b00001011;
         #5
         $display("%b -> %b, expected %b", in, out, expected);
 
-        // Basic test case #2
-        in = 8'b00100000;
-        expected = 8'b00100000;
+        // Test case #2
+        aIn = 8'b00110001;
+        bIn = 8'b00001100;
+        expected = 8'b00110111;
         #5
         $display("%b -> %b, expected %b", in, out, expected);
 
-        // Basic test case #3
-        in = 8'b01010100;
-        expected = 8'b00000100;
+        // Test case #3
+        aIn = 8'b10010010;
+        bIn = 8'b01011111;
+        expected = 8'b10011001;
         #5
         $display("%b -> %b, expected %b", in, out, expected);
         
-        // Basic test case #4
-        in = 8'b01110000;
-        expected = 8'b00010000;
-        #5
-        $display("%b -> %b, expected %b", in, out, expected);
-        
-        // Basic test case #5
-        in = 8'b10000000;
-        expected = 8'b10000000;
+        // Test case #4
+        aIn = 8'b11111110;
+        bIn = 8'b11111000;
+        expected = 8'b11111111;
         #5
         $display("%b -> %b, expected %b", in, out, expected);
 
     end
-
-
-
 endmodule
