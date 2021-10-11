@@ -3,6 +3,7 @@ module big_number_first_tb ();
   reg [7:0] aIn, bIn;
   wire [7:0] aOut, bOut;
   reg [7:0] expected_aOut, expected_bOut;
+  big_number_first dut (.aIn(aIn), .bIn(bIn), .aOut(aOut), .bOut(bOut));
 
 
 initial begin
