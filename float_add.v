@@ -18,5 +18,10 @@ module float_add (
     shifter shift_mantissa (.in(sum_ab), .dir(1), .dis(cout), .out(shifted_mantissa));
     
     assign final_exp = aOut[7:5] + {2'b0,1};
-    assign result = {final_exp,sum_ab}
+    always @(*) begin 
+        if (aOut[7:5] == 3'b111 && cout == 1)
+            result = 8'b11111111;
+        else 
+            result = {final_exp,sum_ab};
+    end
 endmodule
