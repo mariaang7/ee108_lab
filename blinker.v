@@ -1,0 +1,6 @@
+module blinker (
+
+);
+
+
+endmodule
