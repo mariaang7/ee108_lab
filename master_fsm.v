@@ -1,4 +1,4 @@
-module master_fsm (
+module master_fsm (input 
 
 );
 
