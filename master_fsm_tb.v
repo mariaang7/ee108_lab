@@ -12,16 +12,22 @@ module master_fsm_tb ();
                 $display("%b %b %b %b %b %b %b %b %b %b", reset, clock, state, faster, slower, next, shift_left_1, shift_left_2, shift_right_1, shift_right_2);
             end
      initial begin
-        #10 reset = 0;
-        #20 reset = 1;
-        #10 reset = 0;
-        #10 next = 1;
-        #10 faster = 1;
-        #10 faster = 0;
-        #10 slower = 1;
-        #10 slower = 0;
-        #10 faster = 1;
-        #10 slower = 0;
+        #10
+         reset = 0;
+        #20
+         reset = 1;
+        #10
+         reset = 0;
+        #10 
+         next = 1;
+        #30
+         faster = 1;
+        #10 
+         faster = 0;
+        #10
+         slower = 1;
+        #10
+         slower = 0;
         $stop;
      end 
 endmodule
