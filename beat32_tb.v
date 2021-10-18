@@ -7,17 +7,14 @@ module beat32_tb ();
         #5 clock = 1 ; #5 clock = 0 ;
       end
   initial begin
-    #10 rst = 0 ;    // start w/o reset to showx state
-    #20 rst = 1 ;    // reset
-    #10 rst = 0 ;    // remove reset
+    #10 reset = 0 ;    // start w/o reset to showx state
+    #20 reset = 1 ;    // reset
+    #10 reset = 0 ;    // remove reset
     #30
-    %display("expected: 0 ---> %d", count);
+    $display("expected: 0 ---> %d", count);
     #20
-    %display("expected: 1 ---> %d", count);
-    #80.   // 8 more cycles
+    $display("expected: 1 ---> %d", count);
+    #80   // 8 more cycles
     $stop ;
   end
-endmodule
- 
-
 endmodule
