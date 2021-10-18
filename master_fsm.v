@@ -1,13 +1,13 @@
-module master_fsm (input wire next;
-                   input wire slower;
-                   input wire faster;
-                   output wire [2:0] state;
-                   output wire shift_left_1;
-                   output wire shift_left_2;
-                   output wire shift_right_1;
-                   output wire shift_right_2;
-                   input clock;
-                   input reset;
+module master_fsm (input wire next,
+                   input wire slower,
+                   input wire faster,
+                   output wire [2:0] state,
+                   output reg shift_left_1,
+                   output reg shift_left_2,
+                   output reg shift_right_1,
+                   output reg shift_right_2,
+                   input clock,
+                   input reset
 );
   
   reg [2:0] next_state;
@@ -26,18 +26,20 @@ module master_fsm (input wire next;
   end
   
   always @(*) begin
-    if (state == 3'b011) 
+    if (state == 3'b011) begin
       shift_right_1 = slower;
       shift_left_1 = faster;
-    else if (state == 3'b101)
+      end
+    else if (state == 3'b101) begin
       shift_right_2 = slower;
       shift_left_2 = faster;
-    else 
+      end
+    else begin
       shift_right_1 = 0;
       shift_right_2 = 0;
       shift_left_1 = 0;
       shift_left_2 = 0;
-    endcase 
+      end
   end 
   
   assign next_state = reset ? 3'b000 : next_state; 
