@@ -10,6 +10,8 @@ module beat32 (
   
   always @(*) begin
     case(state)
+      //uncomment next line for testbench and comment original
+      //22'd312: next_state = 0;
       22'd3125000: next_state = 0;
       default: next_state = state + 1;
     endcase
@@ -21,6 +23,8 @@ module beat32 (
   end
   
   always @(*) begin
+    //uncomment next line for testbench and comment original
+    //if (state == 312) begin
     if (state == 3125000) begin
       assign count = 1;
     end else begin
