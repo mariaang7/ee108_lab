@@ -12,7 +12,7 @@ module master_fsm (input wire next,
   
   reg [2:0] next_state;
   
-  dffr #(3) caterina(.clk(clock), .r(reset), .d(next_state), .q(state));  
+  dffr #(3) master_flip(.clk(clock), .r(reset), .d(next_state), .q(state));  
                      
   always @(*) begin
     case (state) 
@@ -42,6 +42,13 @@ module master_fsm (input wire next,
       end
   end 
   
-  assign next_state = reset ? 3'b000 : next_state; 
+  always @(*) begin
+    if (reset) begin
+      next_state = 3'b000;
+      end 
+    else begin 
+      next_state = next_state;
+      end 
+  end
 
 endmodule
