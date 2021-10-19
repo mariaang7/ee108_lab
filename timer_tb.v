@@ -7,7 +7,7 @@ module timer_tb ();
   
   
     
-  timer master(next, slower, faster, state, shift_left_1, shift_left_2, shift_right_1, shift_right_2, clock, reset);
+  timer times(count_en, load_value, clock, reset, out);
     initial 
         forever
             begin 
@@ -22,8 +22,12 @@ module timer_tb ();
         #10
          reset = 0;
         #10 
+         load_value = ;
+        #10 
          count_en = 1;
-        #350
+        #100
+         load_value = ;
+        #250
          count_en = 0;
         #30
         $stop;
