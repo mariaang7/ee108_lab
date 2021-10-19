@@ -28,12 +28,11 @@ always @(*) begin
             blink_rate_new1 = 4'b1000;
         else 
             blink_rate_new1 = blink_rate1;
-        
     else if (FLASH == 2) //1s, 1/2s, 1/4s, 1/8s
         if (shift_left == 1 && shift_right == 0)
-            blink_rate_new2 = (blink_rate2 == 4'b0001) ? 4'b0001 : (blink_rate_new2 >> 1);
-        else if (shift_left == 0 && shift_right == 1)
             blink_rate_new2 = (blink_rate2 == 4'b1000) ? 4'b1000 : (blink_rate_new2 << 1);
+        else if (shift_left == 0 && shift_right == 1)
+            blink_rate_new2 = (blink_rate2 == 4'b1000) ? 4'b1000 : (blink_rate_new2 >> 1);
         else if (rst)
             blink_rate_new1 = 4'b1000;
         else 
@@ -56,4 +55,8 @@ always @(*) begin
     endcase
 
 end
-          
+            
+
+     
+ 
+endmodule
