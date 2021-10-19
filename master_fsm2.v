@@ -6,8 +6,8 @@ module master_fsm (input wire next,
                    output reg shift_left_2,
                    output reg shift_right_1,
                    output reg shift_right_2,
-                   input clock,
-                   input reset
+                   input wire clock,
+                   input wire reset
 );
   
   reg [2:0] next_state1;
