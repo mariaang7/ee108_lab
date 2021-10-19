@@ -5,30 +5,40 @@ module timer (input wire count_en,
               output reg out
 
 );
-
-  dffre #(x+1) counter(.clk(clock), .r(reset), .en(count_en), .d(load_value));
+  reg [x:0] next_state;
+  reg [x:0] state; 
+  reg next_out;
+  
+  dffre #(x+1) counter(.clk(clock), .r(reset), .en(count_en), .d(next_state), .q(state));
+  dffr #() states(.clk(clock), .r(reset), .d(next_out), .q(out));  
   
   always @(*) begin
-    if (count_en) begin
-      load_value = load_value - 1;
-      if (load_value == 0) begin
-        out = 1'b1;
-      end 
-      else begin 
-        out = 1'b0;
-      end 
-    end 
-    else begin
-      load_value = load_value; 
-    end 
+    case(state) 
+      1'b0: next_state = count_en ? load_value : 1'b0;
+    default: next_state = count_en ? state - 1 : state;
+    endcase 
   end 
   
   always @(*) begin
+    if (state == 1'b0) begin
+      case(out)
+        1'b0: next_out = 1'b1;
+      default: next_out = 1'b0;
+      endcase 
+    end 
+    else 
+      next_out = 1'b0;
+    end 
+  end 
+  
+  
+  always @(*) begin
     if (reset) begin
-      count_en = 1'b0;
+      out = 1'b0;
+      next_state = load_value;
       end 
     else begin 
-      count_en = count_en;
+      out = out;
       end 
   end
 
