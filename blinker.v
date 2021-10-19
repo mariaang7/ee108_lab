@@ -1,6 +1,6 @@
 module blinker (input wire switch,
                 output wire out,
-                input wire clock,
+                input clock,
                 input wire reset
 
 );
