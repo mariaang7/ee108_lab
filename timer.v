@@ -10,7 +10,7 @@ module timer (input wire count_en,
   reg next_out;
   
   dffre #(x+1) counter(.clk(clock), .r(reset), .en(count_en), .d(next_state), .q(state));
-  dffr #() states(.clk(clock), .r(reset), .d(next_out), .q(out));  
+  dffr #() states(.clk(clock), .d(next_out), .q(out));  
   
   always @(*) begin
     case(state) 
