@@ -13,6 +13,8 @@ module timer_tb ();
                 //$display("%b %b %b %b %b %b %b %b %b %b", reset, clock, state, faster, slower, next, shift_left_1, shift_left_2, shift_right_1, shift_right_2);
             end
      initial begin
+        #10 
+         load_value = 001000000;
         #10
          reset = 0;
         #20
@@ -20,10 +22,8 @@ module timer_tb ();
         #10
          reset = 0;
         #10 
-         load_value = 001000000;
-        #10 
          count_en = 1;
-        #300
+        #700
          count_en = 0;
         #30
         $stop;
