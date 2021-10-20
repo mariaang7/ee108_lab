@@ -1,4 +1,4 @@
-module programmable_blinker (
+module programmable_blinker #(parameter FLASH = 1)(
   input wire shift_left, shift_right,
   input clock,
   input reset,
@@ -10,7 +10,7 @@ module programmable_blinker (
   wire timer_out;
   
   beat32 may (.clock(clock), .reset(reset), .count(count));
-  shifter #() jeff (.shift_left(shift_left), .shift_right(shift_right), .clk(clock), .rst(reset), .out(shifter_out));
+  shifter #(FLASH) jeff (.shift_left(shift_left), .shift_right(shift_right), .clk(clock), .rst(reset), .out(shifter_out));
   timer joe (.count_en(count), .load_value(shifter_out), .clock(clock), .reset(reset), .out(timer_out));
   blinker nin (.switch(timer_out), .clock(clock), .reset(reset), .out(out));
  
