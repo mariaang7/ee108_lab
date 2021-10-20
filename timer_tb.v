@@ -23,7 +23,9 @@ module timer_tb ();
          reset = 0;
         #10 
          count_en = 1;
-        #700
+        #500
+         count_en = 0;
+        #200
          count_en = 0;
         #30
         $stop;
