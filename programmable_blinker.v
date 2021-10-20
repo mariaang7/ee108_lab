@@ -5,8 +5,11 @@ module programmable_blinker (
   output wire out
 );
 
+  wire [9:0] shifter_out;
+  wire [8:0] load_value_timer;
   
-  shifter jeff (.shift_left(shift_left), .shift_right(shift_right), .clk(clock), .rst(reset), .out());
+  shifter jeff (.shift_left(shift_left), .shift_right(shift_right), .clk(clock), .rst(reset), .out(shifter_out));
+  timer joe (.load_value(load_value_timer), .clock(clock), .reset(reset), .out());
  
 
 endmodule
