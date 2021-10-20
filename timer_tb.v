@@ -29,4 +29,3 @@ module timer_tb ();
         $stop;
      end 
 endmodule 
-
