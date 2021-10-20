@@ -1,5 +1,7 @@
 module programmable_blinker (
-  Input wire shift_left, shift_right,
+  input wire shift_left, shift_right,
+  input clock,
+  input reset,
   output wire out
 );
 
