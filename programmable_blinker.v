@@ -5,7 +5,8 @@ module programmable_blinker (
   output wire out
 );
 
-  shifter jeff (.shift_left(shift_left), .shift_right(shift_right), 
+  
+  shifter jeff (.shift_left(shift_left), .shift_right(shift_right), .clk(clock), .rst(reset), .out());
  
 
 endmodule
