@@ -3,7 +3,7 @@ module blinker_tb ();
   wire clock, reset, out;
   reg switch;
   reg next_out;
-  blinker blinker(switch, out, clock, reset);
+  blinker #(1) blinker(switch, out, clock, reset);
     initial 
         forever
             begin 
