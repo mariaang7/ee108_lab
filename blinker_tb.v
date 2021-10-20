@@ -1,5 +1,4 @@
 module blinker_tb ();
-  wire switch;
   wire clock, reset, out;
   reg switch;
   reg next_out;
@@ -8,7 +7,7 @@ module blinker_tb ();
         forever
             begin 
               #5 clock = 1; #5 clock = 0;
-              $display("%b %b %b %b %b", reset, clock, out, next_out, switch);
+              //$display("%b %b %b %b %b", reset, clock, out, next_out, switch);
             end
      initial begin
         #10
