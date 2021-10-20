@@ -10,11 +10,11 @@
  * specifications in the lab hand-out */
 
 module bicycle_fsm #(parameter FLASH = 1)(
-    input clk, 
-    input faster, 
-    input slower, 
-    input next, 
-    input reset, 
+    input wire clk, 
+    input wire faster, 
+    input wire slower, 
+    input wire next, 
+    input wire reset, 
     output reg rear_light
 );
 
