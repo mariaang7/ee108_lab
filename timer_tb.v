@@ -26,7 +26,7 @@ module timer_tb ();
         #10 
          count_en = 1;
         #100
-         load_value = ;
+         load_value = 000010000;
         #250
          count_en = 0;
         #30
