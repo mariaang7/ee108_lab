@@ -38,6 +38,8 @@ module programmable_blinker_tb ();
       #10
       shift_left2 = 0;
       shift_right2 = 0;
+      #10
+      rst = 1;
       #40
       
       $stop;
