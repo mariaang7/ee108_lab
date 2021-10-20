@@ -1,12 +1,12 @@
 module timer (input wire count_en,
-              input reg [x:0] load_value,
+              input reg [8:0] load_value,
               input wire clock,
               input wire reset,
               output reg out
 
 );
-  reg [x:0] next_state;
-  reg [x:0] state; 
+  reg [8:0] next_state;
+  reg [8:0] state; 
   reg next_out;
   
   dffre #(x+1) counter(.clk(clock), .r(reset), .en(count_en), .d(next_state), .q(state));
