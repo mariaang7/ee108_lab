@@ -30,8 +30,8 @@ module bicycle_fsm(
     // Instantiations of master_fsm, beat32, fast_blinker, slow_blinker here
     master_fsm master(.next(next), .slower(slower), .faster(faster), .state(state), .shift_left_1(shift_left_1), .shift_left_2(shift_left_2), .shift_right_1(shift_right_1), .shift_right_1(shift_right_2), .clock(clk), .reset(reset));
     beat_32 beat(.clock(clk), .reset(reset), .count(count_en));
-    programmable_blinker fast(.shift_left(shift_left_1), .shift_right(shift_right_1), .out(out_1));
-    programmable_blinker slow(.shift_left(shift_left_2), .shift_right(shift_right_2), .out(out_2));
+    programmable_blinker fast(.shift_left(shift_left_1), .shift_right(shift_right_1), .clock(clk), .reset(reset), .out(out_1));
+    programmable_blinker slow(.shift_left(shift_left_2), .shift_right(shift_right_2), .clock(clk), reset(reset), .out(out_2));
     
     // Output mux here
     always @(*) begin
