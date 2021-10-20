@@ -1,6 +1,6 @@
 module timer_tb ();
   reg clock, reset, count_en;
-  reg [x:0] load_value;
+  reg [8:0] load_value;
   wire out;
   reg next_out;
   reg [2:0] next_state, state;
@@ -22,7 +22,7 @@ module timer_tb ();
         #10
          reset = 0;
         #10 
-         load_value = ;
+         load_value = 001000000;
         #10 
          count_en = 1;
         #100
