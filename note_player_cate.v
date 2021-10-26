@@ -18,7 +18,7 @@ wire count_beat;
 
     // Implementation goes here!
     frequency_rom note_step_size (.clk(clk), .addr(note_to_load), .dout(step_size));
-
+    
     always @(*) begin
         case(count_beat) 
             duration_to_load: next_count_beat = 1'b0;
@@ -27,9 +27,10 @@ wire count_beat;
     end 
     
     assign done_with_note = (count_beat == duration_to_load) ? 1'b1 : 1'b0;
+    dffre #(22) counter_beat(.clk(clk), .r(reset), .en(play_enable), .d(next_count_beat), .q(count_beat));
     
     // call sine_reader
     
-    dffre #(22) counter_beat(.clk(clk), .r(reset), .en(play_enable), .d(next_count_beat), .q(count_beat));
+    
 
 endmodule
