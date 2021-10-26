@@ -21,14 +21,14 @@ wire count_beat;
     
     always @(*) begin
         case(count_beat) 
-            duration_to_load: next_count_beat = 1'b0;
-            default: next_count_beat = beat ? count_beat + 1 : count_beat;
+            duration_to_load: next_count_beat = load_new_note ? 1'b0 : count_beat;
+            default: next_count_beat = (beat && !load_new_note) ? count_beat + 1 : count_beat;
         endcase
     end 
     
     assign done_with_note = (count_beat == duration_to_load) ? 1'b1 : 1'b0;
-    dffre #(22) counter_beat(.clk(clk), .r(reset), .en(play_enable), .d(next_count_beat), .q(count_beat));
-    
+   
+    dffre #(1) counter_beat(.clk(clk), .r(reset), .en(play_enable), .d(next_count_beat), .q(count_beat));
     // call sine_reader
     
     
