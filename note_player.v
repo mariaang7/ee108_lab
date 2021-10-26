@@ -15,7 +15,8 @@ module note_player(
     reg [5:0] count;
     wire [19:0] frequency;
     frequency_rom note (.clk(clk), .addr(note_to_load), .dout(frequency));
-    // frequency to be the input of the sine reader
+    
+    sine_reader dyd (.clk(clk), .reset(reset), .step_size(frequency), .generate_next(load_new_note), .sample_ready(new_sample_ready), .sample(sample_out));
     
     always @(*) begin
         if (beat == 1'b1 && duration_to_load != count) begin
