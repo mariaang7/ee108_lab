@@ -12,15 +12,24 @@ module note_player(
     output new_sample_ready  // Tells the codec when we've got a sample
 );
 
-wire [19:0] note_step_size;
+wire [19:0] step_size;
 reg next_count_beat;
 wire count_beat;
 
     // Implementation goes here!
-    frequency_rom step_size (note_to_load, note_step_size);
+    frequency_rom note_step_size (.clk(clk), .addr(note_to_load), .dout(step_size));
+
+    always @(*) begin
+        case(count_beat) 
+            duration_to_load: next_count_beat = 1'b0;
+            default: next_count_beat = beat ? count_beat + 1 : count_beat;
+        endcase
+    end 
+    
+    assign done_with_note = (count_beat == duration_to_load) ? 1'b1 : 1'b0;
     
     // call sine_reader
     
-    dffr #(22) counter_beat(.clk (clk),.r (reset),.d (next_count_beat), .q (count_beat));
+    dffre #(22) counter_beat(.clk(clk), .r(reset), .en(play_enable), .d(next_count_beat), .q(count_beat));
 
 endmodule
