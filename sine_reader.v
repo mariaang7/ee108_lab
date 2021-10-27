@@ -37,16 +37,30 @@ module sine_reader(
     
     always @(*) begin
         case (quad_count)
-            2'b00: address_sine = raw_address;
-                   next_quad_count = 2'b01;
-            2'b01: address_sine = raw_address;
-                   next_quad_count = 2'b10;
-            2'b10: address_sine = 10'b0 - raw_address;
-                   next_quad_count = 2'b10;
-            2'b10: address_sine = 10'b0 - raw_address;
-                   next_quad_count = 2'b00;
-            default: address_sine = raw_address;
-                     next_quad_count = 2'b01;
+            2'b00: begin
+                address_sine = raw_address;
+                next_quad_count = 2'b01;
+                sample_ready = 1'b0;
+            end
+            2'b01: begin
+                address_sine = 10'b0 - raw_address;
+                next_quad_count = 2'b10;
+                sample_ready = 1'b0;
+            end
+            2'b10: begin
+                address_sine = raw_address;
+                next_quad_count = 2'b10;
+                sample_ready = 1'b0;
+            end
+            2'b11: begin
+                address_sine = 10'b0 - raw_address;
+                next_quad_count = (generate_next) ? 2'b00 : 2'b11;
+                sample_ready = 1'b1; 
+            default: begin
+                address_sine = raw_address;
+                next_quad_count = 2'b01;
+                sample_ready = 1'b1;
+            end
         endcase
     end
     
@@ -54,9 +68,6 @@ module sine_reader(
     wire [1:0] quad_count;
     dff #(2) quadrant_count (.clk(clk), .d(next_quad_count), .q(quad_count));
     
-    assign sample = (Q == 00 || Q == 01) ? out : 15'b0 - out;
-    
-    sample_ready???
-   
+            assign sample = (Q == 00 || Q == 01) ? out : 15'b0 - out;
 
 endmodule
