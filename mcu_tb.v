@@ -25,7 +25,16 @@ module mcu_tb();
 
     // Tests
     initial begin
-
+        #10
+        play = 1'b1;
+        #10
+        play = 1'b0;
+        #10
+        next_buttom = 1'b1;
+        #10
+        song_done = 1'b1;
+        
+        
     end
 
 endmodule
