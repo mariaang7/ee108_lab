@@ -48,7 +48,7 @@ module wave_capture (
         endcase 
     end 
     
-    assign write_address = new_sample_read ? {~read_index, count} : 9'b0;
+    assign write_address = new_sample_ready ? {~read_index, count} : 9'b0;
     assign write_sample = new_sample_in[15:8];
     
 endmodule
