@@ -6,9 +6,9 @@ module wave_capture (
     input wave_display_idle,
 
     output wire [8:0] write_address,
-    output wire write_enable,
+    output reg write_enable,
     output wire [7:0] write_sample,
-    output wire read_index
+    output reg read_index
 );
     `define STATE_ARMED 2'b00
     `define STATE_ACTIVE 2'b01
@@ -24,14 +24,13 @@ module wave_capture (
     dffr #(2) states(.clk(clk), .r(reset), .d(next_state), .q(state));
     dffr #(2) counter(.clk(clk), .r(reset), .d(next_count), .q(count));
     
-    ram_1w2r #(8, 8) ram(.clka(clk), .wea(write_enable), addra(), .dina(), .douta(), .clkb(clk), addrb(), doutb());
-    
     
     always @(*) begin
         case(state)
             2'b00: begin
-                next_state = (new_sample_in >= 0) ? 2'b01 : 2'b00;
+                next_state = (new_sample_in >= 1'b0) ? 2'b01 : 2'b00;
                 next_count = 0;
+                write_enable = 1'b0;
             end 
             2'b01: begin
                 next_state = (count == 8'b11111111) ? 2'b10 : 2'b00;
@@ -41,11 +40,13 @@ module wave_capture (
                 next_state = wave_display_idle ? 2'b00 : 2'b10;
                 //next_count = 0;
                 read_index = ~read_index;
+                write_enable = 1'b1;
             end 
         default: next_state = 2'b00;
         endcase 
     end 
     
-    always
+    assign write_address = new_sample_read ? {~read_index, count} : 9'b0;
+    assign write_sample = new_sample_in[15:8];
     
 endmodule
