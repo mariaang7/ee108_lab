@@ -10,5 +10,9 @@ module wave_capture (
     output wire [7:0] write_sample,
     output wire read_index
 );
-// Implement me!
+    `define STATE armed 
+    `define STATE active
+    `define STATE wait
+    
+    
 endmodule
