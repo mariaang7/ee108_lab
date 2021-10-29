@@ -10,6 +10,8 @@ module wave_capture (
     output wire [7:0] write_sample,
     output reg read_index
 );
+    
+    // need to switch audio sample from signed to unsigned
     `define STATE_ARMED 2'b00
     `define STATE_ACTIVE 2'b01
     `define STATE_WAIT 2'b10
