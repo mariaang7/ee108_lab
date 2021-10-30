@@ -13,13 +13,30 @@ module wave_display (
     output wire [7:0] b
 );
     
+    wire valid_x;
+    
     always @(*) begin
         case(x[10:8])
-            3'b000: read_address = 0;
-            3'b001: read_address = {read_ind, 0, x[7:1]};
-            3'b010: read_address = {read_ind, 1, x[7:1]};
-            3'b011: read_address = 0;
-            default: read_adress = 0;
+            3'b000: begin 
+                read_address = 0;
+                valid_x = 0;
+            end
+            3'b001: begin
+                read_address = {read_ind, 0, x[7:1]};
+                valid_x = 1
+            end
+            3'b010: begin
+                read_address = {read_ind, 1, x[7:1]};
+                valid_x = 1;
+            end
+            3'b011: begin
+                read_address = 0;
+                valid_x = 0;
+            end
+            default: begin
+                read_adress = 0;
+                valid_x = 0;
+            end
         endcase
     end
     
@@ -32,10 +49,11 @@ module wave_display (
     wire magn_valid1;
     wire magn_valid2;
     
-    magn_valid1 = ((read_value > y_top[8:1]) && (y_top[8:1] > prev_read_value));
-    magn_valid2 = ((read_value < y_top[8:1]) && (y_top[8:1] < prev_read_value));
-    magn_valid = (magn_valid1 || magn_valid2);
-            
+    assign magn_valid1 = ((read_value > y_top[8:1]) && (y_top[8:1] > prev_read_value));
+    assign magn_valid2 = ((read_value < y_top[8:1]) && (y_top[8:1] < prev_read_value));
+    assign magn_valid = (magn_valid1 || magn_valid2);
+    
+    assign valid_pixel = (magn_valid && valid_x && ~y[9]);
     
     
 endmodule
