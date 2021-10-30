@@ -6,12 +6,21 @@ module wave_display (
     input valid,
     input [7:0] read_value,
     input read_index,
-    output wire [8:0] read_address,
+    output reg [8:0] read_address,
     output wire valid_pixel,
     output wire [7:0] r,
     output wire [7:0] g,
     output wire [7:0] b
 );
-
-// Implement me!
+    
+    always @(*) begin
+        case(x[10:8])
+            3'b000: read_address = 0;
+            3'b001: read_address = {read_ind, 0, x[7:1]};
+            3'b010: read_address = {read_ind, 1, x[7:1]};
+            3'b011: read_address = 0;
+            default: read_adress = 0;
+        endcase
+            
+    
 endmodule
