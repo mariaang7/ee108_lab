@@ -27,6 +27,14 @@ module wave_display (
     
     wire [7:0] prev_read_value;
     dffr #(8) RAM_dff (.clk(clk), .r(reset), .d(read_value), .q(prev_read_value));
+    
+    wire magn_valid;
+    wire magn_valid1;
+    wire magn_valid2;
+    
+    magn_valid1 = ((read_value > y_top[8:1]) && (y_top[8:1] > prev_read_value));
+    magn_valid2 = ((read_value < y_top[8:1]) && (y_top[8:1] < prev_read_value));
+    magn_valid = (magn_valid1 || magn_valid2);
             
     
     
