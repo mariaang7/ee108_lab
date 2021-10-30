@@ -40,20 +40,25 @@ module wave_display (
         endcase
     end
     
-    wire y_top [9:0] = {0, y[8:1]};
+    assign valid_pixel = (valid_x && ~y[9]);  //if pixel in quadrant 1 or 2
     
     wire [7:0] prev_read_value;
     dffr #(8) RAM_dff (.clk(clk), .r(reset), .d(read_value), .q(prev_read_value));
     
-    wire magn_valid;
-    wire magn_valid1;
-    wire magn_valid2;
+    wire y_top [9:0] = {0, y[8:1]};  //y in top half
+    
+    wire magn_valid, magn_valid1, magn_valid2;
     
     assign magn_valid1 = ((read_value > y_top[8:1]) && (y_top[8:1] > prev_read_value));
     assign magn_valid2 = ((read_value < y_top[8:1]) && (y_top[8:1] < prev_read_value));
-    assign magn_valid = (magn_valid1 || magn_valid2);
+    assign magn_valid = (magn_valid1 || magn_valid2);     //high if between RAM[x] and RAM[x-1]
     
-    assign valid_pixel = (magn_valid && valid_x && ~y[9]);
+    always @(*) begin
+        case(magn_valid)
+            1'b0: {r,g,b} = 24'hffffff; //white
+            1'b1: {r,g,b} = 24'h0000f0; //dark blue
+    
+    
     
     
 endmodule
