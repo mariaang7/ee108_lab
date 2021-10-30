@@ -21,6 +21,13 @@ module wave_display (
             3'b011: read_address = 0;
             default: read_adress = 0;
         endcase
+    end
+    
+    wire y_top [9:0] = {0, y[8:1]};
+    
+    wire [7:0] prev_read_value;
+    dffr #(8) RAM_dff (.clk(clk), .r(reset), .d(read_value), .q(prev_read_value));
             
+    
     
 endmodule
