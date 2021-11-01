@@ -13,7 +13,7 @@ module wave_display (
     output wire [7:0] b
 );
     
-    wire valid_x;
+    reg valid_x;
     
     always @(*) begin
         case(x[10:8])
@@ -22,11 +22,11 @@ module wave_display (
                 valid_x = 0;
             end
             3'b001: begin
-                read_address = {read_ind, 0, x[7:1]};
-                valid_x = 1
+                read_address = {read_index, 1'b0, x[7:1]};
+                valid_x = 1;
             end
             3'b010: begin
-                read_address = {read_ind, 1, x[7:1]};
+                read_address = {read_index, 1'b1, x[7:1]};
                 valid_x = 1;
             end
             3'b011: begin
@@ -34,7 +34,7 @@ module wave_display (
                 valid_x = 0;
             end
             default: begin
-                read_adress = 0;
+                read_address = 0;
                 valid_x = 0;
             end
         endcase
@@ -45,7 +45,7 @@ module wave_display (
     wire [7:0] prev_read_value;
     dffr #(8) RAM_dff (.clk(clk), .r(reset), .d(read_value), .q(prev_read_value));
     
-    wire y_top [9:0] = {0, y[8:1]};  //y in top half
+    wire [9:0] y_top = {1'b0, y[8:1]};  //y in top half
     
     wire magn_valid, magn_valid1, magn_valid2;
     
@@ -53,12 +53,8 @@ module wave_display (
     assign magn_valid2 = ((read_value < y_top[8:1]) && (y_top[8:1] < prev_read_value));
     assign magn_valid = (magn_valid1 || magn_valid2);     //high if between RAM[x] and RAM[x-1]
     
-    always @(*) begin
-        case(magn_valid)
-            1'b0: {r,g,b} = 24'hffffff; //white
-            1'b1: {r,g,b} = 24'h0000f0; //dark blue
-    
-    
-    
-    
+   
+    assign {r,g,b} = (magn_valid)? 24'h0000f0 : 24'hffffff;
+            
+   
 endmodule
