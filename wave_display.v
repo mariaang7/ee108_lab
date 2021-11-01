@@ -22,11 +22,11 @@ module wave_display (
                 valid_x = 0;
             end
             3'b001: begin
-                read_address = {read_index, 1'b0, x[7:1]};
+                read_address = {read_index, ~x[8], x[7:1]};
                 valid_x = 1;
             end
             3'b010: begin
-                read_address = {read_index, 1'b1, x[7:1]};
+                read_address = {read_index, ~x[8], x[7:1]};
                 valid_x = 1;
             end
             3'b011: begin
@@ -42,15 +42,20 @@ module wave_display (
     
     assign valid_pixel = (valid_x && ~y[9]);  //if pixel in quadrant 1 or 2
     
+    wire [8:0] last_address;
+    ddfr #(9) addr_dff (.clk(clk), .r(reset), .d(read_address), .q(last_address));
+    
+    wire en_read = ~(read_address == last_address);
+   
     wire [7:0] prev_read_value;
-    dffr #(8) RAM_dff (.clk(clk), .r(reset), .d(read_value), .q(prev_read_value));
+    dffr #(8) RAM_dffre (.clk(clk), .r(reset), en(en_read), .d(read_value), .q(prev_read_value));
     
     wire [9:0] y_top = {1'b0, y[8:1]};  //y in top half
     
     wire magn_valid, magn_valid1, magn_valid2;
     
-    assign magn_valid1 = ((read_value > y_top[8:1]) && (y_top[8:1] > prev_read_value));
-    assign magn_valid2 = ((read_value < y_top[8:1]) && (y_top[8:1] < prev_read_value));
+    assign magn_valid1 = ((read_value >= y_top[8:1]) && (y_top[8:1] >= prev_read_value));
+    assign magn_valid2 = ((read_value =< y_top[8:1]) && (y_top[8:1] =< prev_read_value));
     assign magn_valid = (magn_valid1 || magn_valid2);     //high if between RAM[x] and RAM[x-1]
     
    
