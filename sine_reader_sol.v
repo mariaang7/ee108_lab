@@ -3,6 +3,7 @@ module sine_reader(
     input reset,
     input [19:0] step_size,
     input generate_next,
+    input rewind,
 
     output sample_ready,
     output wire [15:0] sample
@@ -12,11 +13,15 @@ module sine_reader(
     localparam SWIDTH = 22;
 
     wire [SWIDTH - 1:0] addr;
+    wire [SWIDTH - 1:0] new_addr;
+    
+    assign new_addr = rewind ? addr - step_size : addr + step_size;
+    
     dffre #(.WIDTH(SWIDTH)) state_reg (
         .clk(clk),
         .r(reset),
         .en(generate_next),
-        .d(addr + step_size),
+        .d(new_addr),
         .q(addr)
     );
 
