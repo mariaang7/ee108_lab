@@ -18,6 +18,9 @@ module music_player(
     // The raw new_frame signal from the ac97_if codec.
     input new_frame,
 
+    // Buttons for rewind and fastforward (playback control)
+    input rewind_button,
+    input ff_button,
     // This output must go high for one cycle when a new sample is generated.
     output wire new_sample_generated,
 
@@ -48,6 +51,8 @@ module music_player(
         .reset(reset),
         .play_button(play_button),
         .next_button(next_button),
+        .rewind_button(rewind_button),
+        .ff_button(ff_button),
         .play(play),
         .reset_player(reset_player),
         .song(current_song),
@@ -73,6 +78,8 @@ module music_player(
         .duration(duration_for_note),
         .new_note(new_note),
         .note_done(note_done)
+        .rewind(rewind_button),
+        .ff(ff_button)
     );
 
 //   
@@ -96,6 +103,7 @@ module music_player(
         .generate_next_sample(generate_next_sample),
         .sample_out(note_sample),
         .new_sample_ready(note_sample_ready)
+        .rewind(rewind_button)
     );
       
 //   
