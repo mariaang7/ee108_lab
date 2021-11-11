@@ -19,6 +19,8 @@ module song_reader(
     input play,
     input [1:0] song,
     input note_done,
+    input rewind;
+    input ff;
     output wire song_done,
     output wire [5:0] note,
     output wire [5:0] duration,
@@ -30,6 +32,7 @@ module song_reader(
 
     wire [`SWIDTH-1:0] state;
     reg  [`SWIDTH-1:0] next;
+    wire  [5:0] final_duration;
 
     // For identifying when we reach the end of a song
     wire overflow;
@@ -54,7 +57,7 @@ module song_reader(
             `PAUSED:            next = play ? `RETRIEVE_NOTE : `PAUSED;
             `RETRIEVE_NOTE:     next = play ? `NEW_NOTE_READY : `PAUSED;
             `NEW_NOTE_READY:    next = play ? `WAIT: `PAUSED;
-            `WAIT:              next = !play ? `PAUSED
+            `WAIT:              next = play ? `PAUSED
                                              : (note_done ? `INCREMENT_ADDRESS
                                                           : `WAIT);
             `INCREMENT_ADDRESS: next = (play && ~overflow) ? `RETRIEVE_NOTE
@@ -64,10 +67,11 @@ module song_reader(
     end
 
     assign {overflow, next_note_num} =
-        (state == `INCREMENT_ADDRESS) ? {1'b0, curr_note_num} + 1
+        (state == `INCREMENT_ADDRESS) ? (rewind ? {1'b0, curr_note_num} + 1 : {1'b0, curr_note_num} - 1)
                                       : {1'b0, curr_note_num};
     assign new_note = (state == `NEW_NOTE_READY);
-    assign {note, duration} = note_and_duration;
+    assign final_duration = (rewind || ff) ? (note_and_duration[5:0] >> 1) : note_and_duration[5:0];
+    assign {note, temp_duration} = {note_and_duration[11:6], final_duration};
     assign song_done = overflow;
 
 endmodule
