@@ -24,8 +24,7 @@ module song_reader(
     output wire song_done,
     output wire [5:0] note,
     output wire [5:0] duration,
-    output wire new_note,
-    output rewind_out
+    output wire new_note
 );
     wire [`SONG_WIDTH-1:0] curr_note_num, next_note_num;
     wire [`NOTE_WIDTH + `DURATION_WIDTH -1:0] note_and_duration;
@@ -74,6 +73,5 @@ module song_reader(
     assign final_duration = (rewind || ff) ? (note_and_duration[5:0] >> 1) : note_and_duration[5:0];
     assign {note, temp_duration} = {note_and_duration[11:6], final_duration};
     assign song_done = overflow;
-    assign rewind_out = rewind;
 
 endmodule
