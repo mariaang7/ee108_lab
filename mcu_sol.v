@@ -7,6 +7,8 @@ module mcu(
     input reset,
     input play_button,
     input next_button,
+    input rewind_button,
+    input ff_button,
     output play,
     output reset_player,
     output [1:0] song,
