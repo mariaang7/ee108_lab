@@ -58,7 +58,7 @@ module lab4_top(
 				rewind = btn[0];
 			end
 			{`STATE_3,1): begin 
-				next_state = `STATE_0;
+				next_state = `STATE_4;
 				ff = btn[0];
 			end
 			 {`STATE_4,1): begin 
