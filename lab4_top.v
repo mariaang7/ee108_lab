@@ -51,7 +51,7 @@ module lab4_top(
 			end
 			{`STATE_1,1): begin 
 				next_state = `STATE_2;
-				next = btn[0];
+				next_button = btn[0];
 			end
 			{`STATE_2,1): begin 
 				next_state = `STATE_3;
