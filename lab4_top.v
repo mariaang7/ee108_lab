@@ -1,3 +1,9 @@
+`define STATE_0 3'b000
+`define STATE_1 3'b001
+`define STATE_2 3'b010
+`define STATE_3 3'b011
+`define STATE_4 3'b100
+
 module lab4_top(
     // System Clock (125MHz)
     input sysclk,
@@ -23,6 +29,7 @@ module lab4_top(
     output wire [2:0] leds_rgb_1,
     output wire [3:0] leds
 );
+	
     // button_press_unit's WIDTH parameter is exposed here so that you can
     // reduce it in simulation.  Setting it to 1 effectively disables it.
     parameter BPU_WIDTH = 20;
@@ -30,10 +37,49 @@ module lab4_top(
     // If you reduce this to 100 your simulation will be 10x faster.
     parameter BEAT_COUNT = 1000;
 
+    // States
+    wire [1:0] state;
+	wire [1:0] next_state:
+	
+	dff #(3) states(.clk(clk_100), .d(next_state), .q(state)):
+	
+	always @(*) begin
+		case ({state,control_btn})
+			{`STATE_0,1): begin 
+				next_state = `STATE_1;
+				reset = btn[0];
+			end
+			{`STATE_1,1): begin 
+				next_state = `STATE_2;
+				next = btn[0];
+			end
+			{`STATE_2,1): begin 
+				next_state = `STATE_3;
+				rewind = btn[0];
+			end
+			{`STATE_3,1): begin 
+				next_state = `STATE_0;
+				ff = btn[0];
+			end
+			 {`STATE_4,1): begin 
+				next_state = `STATE_0;
+				display = btn[0];
+			end
+			default: begin
+				next_state = `STATE_0;
+				reset = btn[0];
+			end
+		endcase 
+	end 
+			
     // Our reset
-    wire reset = btn[2];
+    reg rewind;
+    reg ff;
+    reg display;
+    reg control_btn = btn[2];
+    wire reset;
     wire play_button = btn[1];
-    wire next_button = btn[0];
+    reg next_button;
 
     // Clock converter
     wire clk_100;
