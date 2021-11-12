@@ -1,0 +1,15 @@
+`define 
+
+module buttons_fsm(
+    input clk,
+    input reset,
+    input play,
+    input [1:0] song,
+    input note_done,
+    input rewind,
+    input ff,
+    output wire song_done,
+    output wire [5:0] note,
+    output wire [5:0] duration,
+    output wire new_note
+);
