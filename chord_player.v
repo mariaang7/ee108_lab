@@ -5,6 +5,7 @@ module chord_player(
     input reset,
     input play,
     input [1:0] song,
+    input generate_next_sample,
     //input rewind, idk what to do with this
     //input ff, idk what to do with this
     input beat,
@@ -47,21 +48,21 @@ module chord_player(
     );
     
     note_player note_player_one (.clk(clk), .reset(reset), .play_enable(play), .note_to_load(note_one), .duration_to_load(duration_one), 
-                                 .load_new_note(new_note_one), .rewind(????), .done_with_note(done_with_note_one), .beat(beat), .generate_next_sample(???),
-                                 .sample_out(sample_one), .new_sample_ready(sample_one_ready)
+                                 .load_new_note(new_note_one), .rewind(????), .done_with_note(done_with_note_one), .beat(beat), 
+                                 .generate_next_sample(generate_next_sample), .sample_out(sample_one), .new_sample_ready(sample_one_ready)
     );
     
     note_player note_player_two (.clk(clk), .reset(reset), .play_enable(play), .note_to_load(note_two), .duration_to_load(duration_two), 
-                                 .load_new_note(new_note_two), .rewind(????), .done_with_note(done_with_note_two), .beat(beat), .generate_next_sample(???),
-                                 .sample_out(sample_two), .new_sample_ready(sample_two_ready)
+                                 .load_new_note(new_note_two), .rewind(????), .done_with_note(done_with_note_two), .beat(beat),
+                                 .generate_next_sample(generate_next_sample), .sample_out(sample_two), .new_sample_ready(sample_two_ready)
     );
     
     note_player note_player_three (.clk(clk), .reset(reset), .play_enable(play), .note_to_load(note_three), .duration_to_load(duration_three), 
-                                 .load_new_note(new_note_three), .rewind(????), .done_with_note(done_with_note_three), .beat(beat), .generate_next_sample(???),
-                                 .sample_out(sample_three), .new_sample_ready(sample_three_ready)
+                                 .load_new_note(new_note_three), .rewind(????), .done_with_note(done_with_note_three), .beat(beat), 
+                                   .generate_next_sample(generate_next_sample), .sample_out(sample_three), .new_sample_ready(sample_three_ready)
     );
     
-    time_advancer advance (.clk(clk), .reset(reset), .duration(advance_duration), .beat(beat), .advance_done(advance_done));
+    assign sample_out = sample_one + sample_two + sample_three;
     
     
     
