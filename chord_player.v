@@ -9,6 +9,7 @@ module chord_player(
     //input ff, idk what to do with this
     input beat,
     output wire song_done,
+    output wire [15:0] sample_out
 );
     
     wire sample_one_ready, sample_two_ready, sample_three_ready;
@@ -60,53 +61,8 @@ module chord_player(
                                  .sample_out(sample_three), .new_sample_ready(sample_three_ready)
     );
     
-    
-    
     time_advancer advance (.clk(clk), .reset(reset), .duration(advance_duration), .beat(beat), .advance_done(advance_done));
     
     
     
-    
-    
-    
-    
-    
-    
-    dffr #(`SONG_WIDTH) note_counter (
-        .clk(clk),
-        .r(reset),
-        .d(next_note_num),
-        .q(curr_note_num)
-    );
-    dffr #(`SWIDTH) fsm (
-        .clk(clk),
-        .r(reset),
-        .d(next),
-        .q(state)
-    );
-
-    song_rom rom(.clk(clk), .addr(rom_addr), .dout(note_and_duration));
-
-    always @(*) begin
-        case (state)
-            `PAUSED:            next = play ? `RETRIEVE_NOTE : `PAUSED;
-            `RETRIEVE_NOTE:     next = play ? `NEW_NOTE_READY : `PAUSED;
-            `NEW_NOTE_READY:    next = play ? `WAIT: `PAUSED;
-            `WAIT:              next = play ? `PAUSED
-                                             : (note_done ? `INCREMENT_ADDRESS
-                                                          : `WAIT);
-            `INCREMENT_ADDRESS: next = (play && ~overflow) ? `RETRIEVE_NOTE
-                                                           : `PAUSED;
-            default:            next = `PAUSED;
-        endcase
-    end
-
-    assign {overflow, next_note_num} =
-        (state == `INCREMENT_ADDRESS) ? (rewind ? {1'b0, curr_note_num} + 1 : {1'b0, curr_note_num} - 1)
-                                      : {1'b0, curr_note_num};
-    assign new_note = (state == `NEW_NOTE_READY);
-    assign final_duration = (rewind || ff) ? (note_and_duration[5:0] >> 1) : note_and_duration[5:0];
-    assign {note, temp_duration} = {note_and_duration[11:6], final_duration};
-    assign song_done = overflow;
-
 endmodule
