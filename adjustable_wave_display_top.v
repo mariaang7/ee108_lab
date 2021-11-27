@@ -1,4 +1,4 @@
-module adjustable_wave_display_top(
+module adjustable_wave_display_top #(parameter DISPLAY_SIZE = 0) (
     input clk,
     input reset,
     input new_sample,
@@ -41,6 +41,10 @@ module adjustable_wave_display_top(
         .doutb(read_sample)
     );
  
+    adjusted_x = 
+    adjusted_y 
+    
+    
     wire valid_pixel;
     wire [7:0] wd_r, wd_g, wd_b;
     wave_display wd(
