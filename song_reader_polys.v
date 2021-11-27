@@ -19,9 +19,6 @@ module song_reader(
     input reset,
     input play,
     input [1:0] song,
-    input note_done,
-    input rewind,
-    input ff,
     output wire song_done,
     input wire advance_done,
     output wire advance_duration,
@@ -29,15 +26,15 @@ module song_reader(
     input wire note_two_done,
     input wire note_three_done,
     input beat,
-    output wire [5:0] note_one,
-    output wire [5:0] note_two,
-    output wire [5:0] note_three,
-    output wire [5:0] duration_one,
-    output wire [5:0] duration_two,
-    output wire [5:0] duration_three,
-    output wire new_note_one,
-    output wire new_note_two,
-    output wire new_note_three,
+    output reg [5:0] note_one,
+    output reg [5:0] note_two,
+    output reg [5:0] note_three,
+    output reg [5:0] duration_one,
+    output reg [5:0] duration_two,
+    output reg [5:0] duration_three,
+    output reg new_note_one,
+    output reg new_note_two,
+    output reg new_note_three
 );
     wire [`SONG_WIDTH-1:0] curr_note_num, next_note_num;
     wire [`NOTE_WIDTH + `DURATION_WIDTH + 4 -1:0] note_and_duration;
@@ -64,12 +61,10 @@ module song_reader(
         .d(next),
         .q(state)
     );
-    
     time_advancer advance (.clk(clk), .reset(reset), .duration(advance_duration), .beat(beat), .advance_done(advance_done));
 
     song_rom rom(.clk(clk), .addr(rom_addr), .dout(note_and_duration));
-    wire msb = [15:14] note_and_duration;
-    wire note_done;
+    wire msb = note_and_duration[15:14];
     assign note_done = (note_one_done || note_two_done || note_three_done);
     
     always @(*) begin
@@ -80,7 +75,7 @@ module song_reader(
             `WAIT:              next = !play ? `PAUSED
                                              : (note_done ? `INCREMENT_ADDRESS
                                                           : `WAIT);
-            `ADVANCE_TIME:      next = (play && anvance_done) ? `INCREMENT_ADDRESS : `ADVANCE_TIME;
+            `ADVANCE_TIME:      next = (play && advance_done) ? `INCREMENT_ADDRESS : `ADVANCE_TIME;
             `INCREMENT_ADDRESS: next = (play && ~overflow) ? `RETRIEVE_NOTE
                                                            : `PAUSED;
             default:            next = `PAUSED;
@@ -91,9 +86,9 @@ module song_reader(
          (state == `INCREMENT_ADDRESS) ? {1'b0, curr_note_num} + 1
                                        : {1'b0, curr_note_num};
     assign new_note = (state == `NEW_NOTE_READY);
-    assign {note, duration} = [14:3] note_and_duration;
+    assign {note, duration} = note_and_duration[14:3];
     assign song_done = overflow;
-    assign advance_duration = msb ? [14:9] note_and_duration : 6'b0;
+    assign advance_duration = msb ? note_and_duration[14:9] : 6'b0;
     
     always @(*) begin
         if (note_one_done && new_note) begin
@@ -109,7 +104,7 @@ module song_reader(
             duration_three = duration;
             new_note_three = 1'b1;
         end else begin
-            {new_note_one, new_note_two, new_note_three} = {1'b0, 1'b0, 1'b0}
+            {new_note_one, new_note_two, new_note_three} = {1'b0, 1'b0, 1'b0};
         end
     end
         
