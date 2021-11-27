@@ -1,4 +1,4 @@
-module wave_display (
+module adjustable_wave_display #(parameter DISPLAY_SIZE = 0) (
     input clk,
     input reset,
     input [10:0] x,  // [0..1279]
