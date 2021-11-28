@@ -3,11 +3,11 @@ module wf_display_limits (
   input btn2,
   input btn3,
   input clk,
-  input rst
-  output reg start_x;
-  output reg end_x;
-  output reg start_y;
-  output reg end_y;
+  input rst,
+  output reg [9:0] start_x,
+  output reg [9:0] end_x,
+  output reg [9:0] start_y,
+  output reg [9:0] end_y,
 )
   
   `define DEFAULT_DISPLAY 3'b000
@@ -31,15 +31,15 @@ module wf_display_limits (
   assign max_start_y = 2'd32;
   assign max_end_y = 3'd512;
  
-  reg [2:0] next_start_x, next_end_x, next_start_y, next_end_y;
-  output wire [2:0] start_x, end_x, start_y, end_y;
+  reg [9:0] next_start_x, next_end_x, next_start_y, next_end_y;
+  output wire [9:0] start_x, end_x, start_y, end_y;
   
   dffr #(3) states(.clk(clk), .r(rst), .d(next_state), .q(state));
   
-  dffr #(3) display_start_x(.clk(clk), .r(rst), .d(next_start_x), .q(start_x));
-  dffr #(3) display_end_x(.clk(clk), .r(rst), .d(next_end_x), .q(end_x));
-  dffr #(3) display_start_y(.clk(clk), .r(rst), .d(next_end_y), .q(start_y));
-  dffr #(3) display_end_y(.clk(clk), .r(rst), .d(next_end_y), .q(end_y));
+  dffr #(10) display_start_x(.clk(clk), .r(rst), .d(next_start_x), .q(start_x));
+  dffr #(10) display_end_x(.clk(clk), .r(rst), .d(next_end_x), .q(end_x));
+  dffr #(10) display_start_y(.clk(clk), .r(rst), .d(next_end_y), .q(start_y));
+  dffr #(10) display_end_y(.clk(clk), .r(rst), .d(next_end_y), .q(end_y));
   
   always @(*) begin
     casex({rst, state})
