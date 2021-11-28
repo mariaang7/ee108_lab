@@ -1,4 +1,4 @@
-module adjustable_wave_display #(parameter DISPLAY_SIZE = 0) (
+module adjustable_wave_display (
     input clk,
     input reset,
     input [10:0] x,  // [0..1279]
@@ -6,6 +6,7 @@ module adjustable_wave_display #(parameter DISPLAY_SIZE = 0) (
     input valid,
     input [7:0] read_value,
     input read_index,
+    input [9:0] start_x, start_y, end_x, end_y;
     output reg [8:0] read_address,
     output wire valid_pixel,
     output wire [7:0] r,
@@ -17,7 +18,7 @@ module adjustable_wave_display #(parameter DISPLAY_SIZE = 0) (
     wire [7:0] read_value_adjusted;
     
     assign read_value_adjusted = (read_value >> 1) + 8'b01000000;
-    //assign read_value_adjusted = (read_value >> 1) + 8'b00100000;
+    
     always @(*) begin
         case(x[10:8])
             3'b000: begin 
@@ -53,7 +54,6 @@ module adjustable_wave_display #(parameter DISPLAY_SIZE = 0) (
     wire [7:0] prev_read_value;
     dffre #(8) RAM_dffre(.clk(clk), .r(reset), .en(en_read), .d(read_value_adjusted), .q(prev_read_value));
     
-    //wire [9:0] y_top = {1'b0, y[8:1]};  //y in top half
     
     wire magn_valid, magn_valid1, magn_valid2;
     
@@ -62,8 +62,7 @@ module adjustable_wave_display #(parameter DISPLAY_SIZE = 0) (
     assign magn_valid = (magn_valid1 || magn_valid2);     //high if between RAM[x] and RAM[x-1]
     
    
-    //assign {r,g,b} = (magn_valid)? 24'h0000f0 : 24'hffffff;
-    assign {r,g,b} = (magn_valid)? 24'hffffff : 24'h000000;
-            
+    assign {r,g,b} = (x[9:0] < start_x || y < start_y || x[9:0] > end_x || y > end_y || !magn_valid) ? 24'h000000 : 24'hffffff;
+           
    
 endmodule
