@@ -21,7 +21,7 @@ module song_reader(
     input [1:0] song,
     output wire song_done,
     input wire advance_done,
-    output wire advance_duration,
+    output wire [5:0] advance_duration,
     input wire note_one_done,
     input wire note_two_done,
     input wire note_three_done,
@@ -37,10 +37,10 @@ module song_reader(
     output reg new_note_three
 );
     wire [`SONG_WIDTH-1:0] curr_note_num, next_note_num;
-    wire [`NOTE_WIDTH + `DURATION_WIDTH + 4 -1:0] note_and_duration;
+    wire [`NOTE_WIDTH + `DURATION_WIDTH + 4 - 1:0] note_and_duration;
     wire [`SONG_WIDTH + 1:0] rom_addr = {song, curr_note_num};
     wire [5:0] note;
-    wire note_done;
+    wire note_done = 1'b0;
 
     wire [`SWIDTH-1:0] state;
     reg  [`SWIDTH-1:0] next;
@@ -48,7 +48,7 @@ module song_reader(
 
     // For identifying when we reach the end of a song
     wire overflow;
-
+    
     dffr #(`SONG_WIDTH) note_counter (
         .clk(clk),
         .r(reset),
@@ -61,10 +61,13 @@ module song_reader(
         .d(next),
         .q(state)
     );
-    time_advancer advance (.clk(clk), .reset(reset), .duration(advance_duration), .beat(beat), .advance_done(advance_done));
-
+    
+    wire new_note;
+    wire [5:0] duration;
     song_rom rom(.clk(clk), .addr(rom_addr), .dout(note_and_duration));
-    wire msb = note_and_duration[15:14];
+    wire msb = note_and_duration[15]; 
+    time_advancer advance (.clk(clk), .reset(reset), .msb(msb), .duration(advance_duration), .beat(beat), .advance_done(advance_done));
+    beat_generator dd (.clk(clk), .reset(reset), .en(msb), .beat(beat));
     assign note_done = (note_one_done || note_two_done || note_three_done);
     
     always @(*) begin
@@ -73,9 +76,9 @@ module song_reader(
             `RETRIEVE_NOTE:     next = play ? (msb ? `ADVANCE_TIME : `NEW_NOTE_READY) : `PAUSED;
             `NEW_NOTE_READY:    next = play ? `WAIT: `PAUSED;
             `WAIT:              next = !play ? `PAUSED
-                                             : (note_done ? `INCREMENT_ADDRESS
+                                             : ((msb == 0 || advance_done) ? `INCREMENT_ADDRESS
                                                           : `WAIT);
-            `ADVANCE_TIME:      next = (play && advance_done) ? `INCREMENT_ADDRESS : `ADVANCE_TIME;
+            `ADVANCE_TIME:      next = play ? `INCREMENT_ADDRESS : `ADVANCE_TIME;
             `INCREMENT_ADDRESS: next = (play && ~overflow) ? `RETRIEVE_NOTE
                                                            : `PAUSED;
             default:            next = `PAUSED;
