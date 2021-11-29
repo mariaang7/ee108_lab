@@ -77,7 +77,7 @@ module music_player(
         .note(note_to_play),
         .duration(duration_for_note),
         .new_note(new_note),
-        .note_done(note_done)
+        .note_done(note_done),
         .rewind(rewind_button),
         .ff(ff_button)
     );
@@ -102,7 +102,7 @@ module music_player(
         .beat(beat),
         .generate_next_sample(generate_next_sample),
         .sample_out(note_sample),
-        .new_sample_ready(note_sample_ready)
+        .new_sample_ready(note_sample_ready),
         .rewind(rewind_button)
     );
       
@@ -136,5 +136,3 @@ module music_player(
         .new_frame(new_frame),
         .valid_sample(sample_out)
     );
-
-endmodule
