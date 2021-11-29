@@ -48,7 +48,7 @@ module wf_limits(
   
   always @(*) begin
     casex({rst, state})
-      4'b1xxx: begin
+      4'b1xxx: begin     //Reset
         next_state = `DEFAULT_DISPLAY;
         next_start_x = default_start_x;
         next_end_x = default_end_x;
@@ -56,15 +56,14 @@ module wf_limits(
         next_end_y = default_end_y;
       end
       4'b0000: begin    //Default display
-        next_state = ({btn1, btn2, btn3} == 3'b100) ? `FULL_SCREEN : 
-        (({btn1, btn2, btn3} == 3'b010) ? `STAGE1 :  `DEFAULT_DISPLAY);
+        next_state = ({btn1, btn2, btn3} == 3'b100) ? `FULL_SCREEN : (({btn1, btn2, btn3} == 3'b010) ? `STAGE1 :  `DEFAULT_DISPLAY);
         next_start_x = default_start_x;
         next_end_x = default_end_x;
         next_start_y = default_start_y;
         next_end_y = default_end_y;
       end
       4'b0001: begin   //Full screen
-        next_state = ({btn1, btn2, btn3} == 3'b001) ? `DEFAULT_DISPLAY : (({btn1, btn2, btn3} == 3'b001) ? `STAGE4 : `FULL_SCREEN);
+        next_state = ({btn1, btn2, btn3} == 3'b100) ? `DEFAULT_DISPLAY : (({btn1, btn2, btn3} == 3'b001) ? `STAGE4 : `FULL_SCREEN);
         next_start_x = max_start_x;
         next_end_x = max_end_x;
         next_start_y = max_start_y;
@@ -72,33 +71,32 @@ module wf_limits(
       end
       4'b0010: begin   //Stage 1
         next_state = ({btn1, btn2, btn3} == 3'b010) ? `STAGE2 : (({btn1, btn2, btn3} == 3'b100 || {btn1, btn2, btn3} == 3'b001) ? `DEFAULT_DISPLAY : `STAGE1);
-        next_start_x = start_x - 10'd10;;
-        next_end_x = end_x + 10'd10;
-        next_start_y = start_y - 10'd6;;
-        next_end_y = end_y + 10'd6;
+        next_start_x = 10'd128;
+        next_end_x = 10'd848;
+        next_start_y = 10'd56;
+        next_end_y = 10'd488;
       end
       4'b0011: begin   //Stage 2
         next_state = ({btn1, btn2, btn3} == 3'b010) ? `STAGE3 : (({btn1, btn2, btn3} == 3'b001) ? `STAGE1 : (({btn1, btn2, btn3} == 3'b100) ?`DEFAULT_DISPLAY : `STAGE2));
-        next_start_x = start_x - 2*10'd10;;
-        next_end_x = end_x + 2*10'd10;
-        next_start_y = start_y - 2*10'd6;;
-        next_end_y = end_y + 2*10'd6;
+        next_start_x = 10'd118;
+        next_end_x = 10'd858;
+        next_start_y = 10'd50;
+        next_end_y = 10'd494;
       end
       4'b0100: begin    //Stage 3
         next_state = ({btn1, btn2, btn3} == 3'b010) ? `STAGE4 : (({btn1, btn2, btn3} == 3'b001) ? `STAGE2 : (({btn1, btn2, btn3} == 3'b100) ?`DEFAULT_DISPLAY : `STAGE3));
-        next_start_x = start_x - 3*10'd10;;
-        next_end_x = end_x + 3*10'd10;
-        next_start_y = start_y - 4*10'd6;;
-        next_end_y = end_y + 4*10'd6;
+        next_start_x = 10'd108;
+        next_end_x = 10'd868;
+        next_start_y = 10'd44;
+        next_end_y = 10'd500;
       end
       4'b0101: begin   //Stage 4
         next_state = ({btn1, btn2, btn3} == 3'b010) ? `FULL_SCREEN : (({btn1, btn2, btn3} == 3'b001) ? `STAGE3 : (({btn1, btn2, btn3} == 3'b100) ?`DEFAULT_DISPLAY : `STAGE4));
-        next_start_x = start_x - 5*10'd10;;
-        next_end_x = end_x + 5*10'd10;
-        next_start_y = start_y - 5*10'd6;;
-        next_end_y = end_y + 5*10'd6;
+        next_start_x = 10'd98;
+        next_end_x = 10'd878;
+        next_start_y = 10'd38;
+        next_end_y = 10'd506;
       end
-      
       default: begin
         next_state = `DEFAULT_DISPLAY;
         next_start_x = default_start_x;
