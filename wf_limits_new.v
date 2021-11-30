@@ -11,11 +11,13 @@ module wf_limits(
 );
   
   `define DEFAULT_DISPLAY 3'b000
-  `define FULL_SCREEN 3'b001
-  `define STAGE1 3'b010
-  `define STAGE2 3'b011
-  `define STAGE3 3'b100
-  `define STAGE4 3'b101
+  `define MAX_WIDTH 3'b001
+  `define FULL_SCREEN 3'b010
+  `define MAX_HEIGHT 3'b011
+  `define STAGE1 3'b100
+  `define STAGE2 3'b101
+  `define STAGE3 3'b110
+  `define STAGE4 3'b111
   
   
   wire [9:0] default_start_x, default_end_x, default_start_y, default_end_y;
@@ -56,41 +58,55 @@ module wf_limits(
         next_end_y = default_end_y;
       end
       4'b0000: begin    //Default display
-        next_state = ({btn1, btn2, btn3} == 3'b100) ? `FULL_SCREEN : (({btn1, btn2, btn3} == 3'b010) ? `STAGE1 :  `DEFAULT_DISPLAY);
+        next_state = ({btn1, btn2, btn3} == 3'b100) ? `MAX_WIDTH : (({btn1, btn2, btn3} == 3'b010) ? `STAGE1 :  `DEFAULT_DISPLAY);
         next_start_x = default_start_x;
         next_end_x = default_end_x;
         next_start_y = default_start_y;
         next_end_y = default_end_y;
       end
-      4'b0001: begin   //Full screen
-        next_state = ({btn1, btn2, btn3} == 3'b100) ? `DEFAULT_DISPLAY : (({btn1, btn2, btn3} == 3'b001) ? `STAGE4 : `FULL_SCREEN);
+      4'b0001: begin    //Max width
+        next_state = ({btn1, btn2, btn3} == 3'b100) ? `FULL_SCREEN : (({btn1, btn2, btn3} == 3'b010) ? `DEFAULT_DISPLAY : `MAX_WIDTH);
+        next_start_x = max_start_x;
+        next_end_x = max_end_x;
+        next_start_y = default_start_y;
+        next_end_y = default_end_y;
+      end
+      4'b0010: begin   //Full screen
+        next_state = ({btn1, btn2, btn3} == 3'b100) ? `MAX_HEIGHT : (({btn1, btn2, btn3} == 3'b010) ? `MAX_WIDTH : `FULL_SCREEN);
         next_start_x = max_start_x;
         next_end_x = max_end_x;
         next_start_y = max_start_y;
         next_end_y =  max_end_y;
       end
-      4'b0010: begin   //Stage 1
+      4'b0011: begin    //Max heigth
+        next_state = ({btn1, btn2, btn3} == 3'b100) ? `DEFAULT_DISPLAY : (({btn1, btn2, btn3} == 3'b010) ? `FULL_SCREEN : `MAX_HEIGHT);
+        next_start_x = default_start_x;
+        next_end_x = default_end_x;
+        next_start_y = max_start_y;
+        next_end_y =  max_end_y;
+      end
+      4'b0100: begin   //Stage 1
         next_state = ({btn1, btn2, btn3} == 3'b010) ? `STAGE2 : (({btn1, btn2, btn3} == 3'b100 || {btn1, btn2, btn3} == 3'b001) ? `DEFAULT_DISPLAY : `STAGE1);
         next_start_x = 10'd128;
         next_end_x = 10'd848;
         next_start_y = 10'd56;
         next_end_y = 10'd488;
       end
-      4'b0011: begin   //Stage 2
-        next_state = ({btn1, btn2, btn3} == 3'b010) ? `STAGE3 : (({btn1, btn2, btn3} == 3'b001) ? `STAGE1 : (({btn1, btn2, btn3} == 3'b100) ?`DEFAULT_DISPLAY : `STAGE2));
+      4'b0101: begin   //Stage 2
+        next_state = ({btn1, btn2, btn3} == 3'b010) ? `STAGE3 : (({btn1, btn2, btn3} == 3'b001) ? `STAGE1 : (({btn1, btn2, btn3} == 3'b100) ? `DEFAULT_DISPLAY : `STAGE2));
         next_start_x = 10'd118;
         next_end_x = 10'd858;
         next_start_y = 10'd50;
         next_end_y = 10'd494;
       end
-      4'b0100: begin    //Stage 3
-        next_state = ({btn1, btn2, btn3} == 3'b010) ? `STAGE4 : (({btn1, btn2, btn3} == 3'b001) ? `STAGE2 : (({btn1, btn2, btn3} == 3'b100) ?`DEFAULT_DISPLAY : `STAGE3));
+      4'b0110: begin    //Stage 3
+        next_state = ({btn1, btn2, btn3} == 3'b010) ? `STAGE4 : (({btn1, btn2, btn3} == 3'b001) ? `STAGE2 : (({btn1, btn2, btn3} == 3'b100) ? `DEFAULT_DISPLAY : `STAGE3));
         next_start_x = 10'd108;
         next_end_x = 10'd868;
         next_start_y = 10'd44;
         next_end_y = 10'd500;
       end
-      4'b0101: begin   //Stage 4
+      4'b0111: begin   //Stage 4
         next_state = ({btn1, btn2, btn3} == 3'b010) ? `FULL_SCREEN : (({btn1, btn2, btn3} == 3'b001) ? `STAGE3 : (({btn1, btn2, btn3} == 3'b100) ?`DEFAULT_DISPLAY : `STAGE4));
         next_start_x = 10'd98;
         next_end_x = 10'd878;
