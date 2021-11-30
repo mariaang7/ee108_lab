@@ -1,4 +1,4 @@
-module adjustable_wave_display (
+module adjustable_wave_display #(parameter WAVE_POSITION) (
     input clk,
     input reset,
     input [10:0] x,  // [0..1279]
@@ -15,9 +15,28 @@ module adjustable_wave_display (
 );
     
     reg valid_x;
-    wire [7:0] read_value_adjusted;
+    reg [7:0] read_value_adjusted;
     
-    assign read_value_adjusted = (read_value >> 1) + 8'b01000000;
+    wire [9:0] height;
+    assign height = end_y - start_y;
+    
+    always @(*) begin
+        case(WAVE_POSITION)
+            2'd0: begin   //note 1
+                read_value_adjusted = read_value/12 - (5/12) * height;
+            end
+            2'd1: begin   //note 2
+                read_value_adjusted = read_value/12 - (1/4) * height;
+            end
+            2'd2: begin   //note 3
+                read_value_adjusted = read_value/12 - (1/12) * height;
+            end
+            2'd3: begin   //chord
+                read_value_adjusted = read_value/4 + (1/4) * height;
+            end
+            default: begin
+                read_value_adjusted = (read_value >> 1) + 8'b01000000;
+            end
     
     always @(*) begin
         case(x[10:8])
