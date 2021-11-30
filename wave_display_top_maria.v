@@ -1,4 +1,4 @@
-module wave_display_top #(parameter WAVE_POSITION) (
+module wave_display_top #(parameter WAVE_POSITION = 0) (
     input clk,
     input reset,
     input new_sample,
