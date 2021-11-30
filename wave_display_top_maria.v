@@ -43,7 +43,7 @@ module wave_display_top #(parameter WAVE_POSITION) (
  
     wire valid_pixel;
     wire [7:0] wd_r, wd_g, wd_b;
-    wave_display wd(
+    wave_display wd #(WAVE_POSITION) ( 
         .clk(clk),
         .reset(reset),
         .x(x),
