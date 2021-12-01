@@ -1,4 +1,4 @@
-module adjustable_wave_display #(parameter WAVE_POSITION) (
+module adjustable_wave_display #(parameter WAVE_POSITION = 0, NOTES_NUM = 1) (
     input clk,
     input reset,
     input [10:0] x,  // [0..1279]
@@ -21,20 +21,22 @@ module adjustable_wave_display #(parameter WAVE_POSITION) (
     wire [9:0] height;
     assign height = end_y - start_y;
     
-    
+    3 notes --> 12
+    2 notes --> 4
+    1 notes --> dont divide 
     
     always @(*) begin
         case(WAVE_POSITION)
             2'd0: begin   //note 1
-                read_value_adjusted = read_value/12 - (5/12) * height;
-                rgb = 24'hff0000;
+                read_value_adjusted = (NOTES_NUM == 1) ? ((read_value >> 1) + 8'b01000000) : ((NOTES_NUM == 2) ? (read_value/4 - (3/4) * height) : (read_value/12 - (5/12) * height));
+                rgb = (NOTES_NUM == 1) ? 24'h000000 : 24'hff0000;
             end
             2'd1: begin   //note 2
-                read_value_adjusted = read_value/12 - (1/4) * height;
+                read_value_adjusted = ((NOTES_NUM == 2) ? (read_value/4 - (1/4) * height) : (read_value/12 - (1/4) * height);
                 rgb = 24'h00ff00;
             end
             2'd2: begin   //note 3
-                read_value_adjusted = read_value/12 - (1/12) * height;
+                read_value_adjusted = (NOTES_NUM == 2) ? read_value/4 + (1/4) * height : read_value/12 - (1/12) * height;
                 rgb = 24'h0000ff;
             end
             2'd3: begin   //chord
