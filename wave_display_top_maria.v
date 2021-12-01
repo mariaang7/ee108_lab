@@ -1,4 +1,4 @@
-module wave_display_top #(parameter WAVE_POSITION = 0) (
+module wave_display_top #(parameter WAVE_POSITION = 0, parameter NOTES_NUM = 1) (
     input clk,
     input reset,
     input new_sample,
@@ -43,7 +43,7 @@ module wave_display_top #(parameter WAVE_POSITION = 0) (
  
     wire valid_pixel;
     wire [7:0] wd_r, wd_g, wd_b;
-    wave_display wd #(WAVE_POSITION) ( 
+    wave_display wd #(.WAVE_POSITION(WAVE_POSITION), .NOTES_NUM(NOTES_NUM)) ( 
         .clk(clk),
         .reset(reset),
         .x(x),
