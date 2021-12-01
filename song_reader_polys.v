@@ -34,7 +34,8 @@ module song_reader(
     output reg [5:0] duration_three,
     output reg new_note_one,
     output reg new_note_two,
-    output reg new_note_three
+    output reg new_note_three,
+    output reg [1:0] notes_num
 );
     wire [`SONG_WIDTH-1:0] curr_note_num, next_note_num;
     wire [`NOTE_WIDTH + `DURATION_WIDTH + 4 - 1:0] note_and_duration;
@@ -98,20 +99,24 @@ module song_reader(
             note_one = note;
             duration_one = duration;
             new_note_one = 1'b1;
+            notes_num = 2'b01;
         end else if (note_two_done && new_note) begin
             note_two = note;
             duration_two = duration;
             new_note_two = 1'b1;
+            notes_num = 2'b10;
         end else if (note_three_done && new_note) begin
             note_three = note;
             duration_three = duration;
             new_note_three = 1'b1;
+            notes_num = 2'b11;
         end else begin
             {new_note_one, new_note_two, new_note_three} = {1'b0, 1'b0, 1'b0};
         end
     end
         
         
+    
 
 
 endmodule
