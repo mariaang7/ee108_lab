@@ -4,22 +4,25 @@ module chord_player(
     input play,
     input [1:0] song,
     input generate_next_sample,
+    input new_frame,
     input rewind,
     output wire song_done,
-    output wire [15:0] sample_out
+    output wire [15:0] sample_out_total,
+    output wire [15:0] sample_one, sample_two, sample_three 
 );
     wire beat;
     beat_generator dd (.clk(clk), .reset(reset), .en(generate_next_sample), .beat(beat));
     
-    
+    wire [15:0] sample_total;
     wire sample_one_ready, sample_two_ready, sample_three_ready;
-    wire [15:0] sample_one, sample_two, sample_three;
     wire done_with_note_one, done_with_note_two, done_with_note_three;
     wire [5:0] note_one, note_two, note_three;
     wire [5:0] duration_one, duration_two, duration_three;
     wire new_note_one, new_note_two, new_note_three;
     wire advance_done;
     wire [5:0] advance_duration;
+    
+    #instantiate mcu
     
     song_reader chords (
     .clk(clk),
@@ -60,8 +63,14 @@ module chord_player(
     );
     
     
-    assign sample_out = sample_one + sample_two + sample_three;
+    assign sample_total = sample_one + sample_two + sample_three;  #check for overflow
     
+    sample_total = sample_out;
+    
+    assign new_sample_generated = generate_next_sample;
+    codec_conditioner (.clk(clk), .reset(reset), .new_sample_in(sample_total), .latch_new_sample_in(sample_three_ready), 
+                       .generate_next_sample(generate_next_sample), .new_frame(new_frame), .valid_sample(sample_out_total));
+   
     
     
 endmodule
