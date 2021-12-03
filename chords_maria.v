@@ -21,8 +21,7 @@ module chord_player(
     wire new_note_one, new_note_two, new_note_three;
     wire advance_done;
     wire [5:0] advance_duration;
-    
-    #instantiate mcu
+    wire sample_total_ready;
     
     song_reader chords (
     .clk(clk),
@@ -64,11 +63,11 @@ module chord_player(
     
     
     assign sample_total = sample_one + sample_two + sample_three;  #check for overflow
-    
-    sample_total = sample_out;
+        
+    sample_total_ready = sample_one_ready || sample_two_ready || sample_three_ready;
     
     assign new_sample_generated = generate_next_sample;
-    codec_conditioner (.clk(clk), .reset(reset), .new_sample_in(sample_total), .latch_new_sample_in(sample_three_ready), 
+    codec_conditioner (.clk(clk), .reset(reset), .new_sample_in(sample_total), .latch_new_sample_in(sample_total_ready), 
                        .generate_next_sample(generate_next_sample), .new_frame(new_frame), .valid_sample(sample_out_total));
    
     
