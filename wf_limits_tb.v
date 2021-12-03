@@ -34,28 +34,17 @@ module wf_limits_tb();
        btn3 = 1'b0;
        #10
        btn1 = 1'b1;
-       #10
+       #40
        btn1 = 1'b0;
-       #10
-       btn1 = 1'b1;
-       #10
-       btn1 = 1'b0;
-       #10
-       btn1 = 1'b1;
-       #10
-       btn1 = 1'b0;
-       #10
-       btn1 = 1'b1;
-       #10
-       btn1 = 1'b0;
-       #10
        btn2 = 1'b1;
-       #100
+       #80
+       btn2 = 1'b0;
+       btn3 = 1'b1;
+       #80
         
         
         $stop;
     end
 
 endmodule
-
 
