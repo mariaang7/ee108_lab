@@ -34,14 +34,15 @@ module song_reader(
     output reg [5:0] duration_three,
     output reg new_note_one,
     output reg new_note_two,
-    output reg new_note_three,
-    output reg [1:0] notes_num
+    output reg new_note_three
 );
+    
     wire [`SONG_WIDTH-1:0] curr_note_num, next_note_num;
     wire [`NOTE_WIDTH + `DURATION_WIDTH + 4 - 1:0] note_and_duration;
     wire [`SONG_WIDTH + 1:0] rom_addr = {song, curr_note_num};
     wire [5:0] note;
     wire note_done = 1'b0;
+    
 
     wire [`SWIDTH-1:0] state;
     reg  [`SWIDTH-1:0] next;
@@ -65,9 +66,13 @@ module song_reader(
     
     wire new_note;
     wire [5:0] duration;
-    song_rom rom(.clk(clk), .addr(rom_addr), .dout(note_and_duration));
+    
+    wire load_advancer;
+    wire next_load_advancer;
+    
     wire msb = note_and_duration[15]; 
-    time_advancer advance (.clk(clk), .reset(reset), .msb(msb), .duration(advance_duration), .beat(beat), .advance_done(advance_done));
+    song_rom rom(.clk(clk), .addr(rom_addr), .dout(note_and_duration));
+    time_advancer advance (.clk(clk), .reset(reset), .load_duration(load_advancer), .duration(advance_duration), .beat(beat), .advance_done(advance_done));
     beat_generator dd (.clk(clk), .reset(reset), .en(msb), .beat(beat));
     assign note_done = (note_one_done || note_two_done || note_three_done);
     
@@ -86,6 +91,11 @@ module song_reader(
         endcase
     end
 
+
+    assign next_load_advancer =(msb ) ? 1'b1 : 1'b0;
+    
+    one_pulse_beat #(1) jksgh (.clk(clk), .r(reset), .beat(beat), .in(next_load_advancer), .out(load_advancer));
+    
     assign {overflow, next_note_num} =
          (state == `INCREMENT_ADDRESS) ? {1'b0, curr_note_num} + 1
                                        : {1'b0, curr_note_num};
@@ -99,24 +109,18 @@ module song_reader(
             note_one = note;
             duration_one = duration;
             new_note_one = 1'b1;
-            notes_num = 2'b01;
         end else if (note_two_done && new_note) begin
             note_two = note;
             duration_two = duration;
             new_note_two = 1'b1;
-            notes_num = 2'b10;
         end else if (note_three_done && new_note) begin
             note_three = note;
             duration_three = duration;
             new_note_three = 1'b1;
-            notes_num = 2'b11;
         end else begin
             {new_note_one, new_note_two, new_note_three} = {1'b0, 1'b0, 1'b0};
         end
     end
-        
-        
-    
-
+             
 
 endmodule
