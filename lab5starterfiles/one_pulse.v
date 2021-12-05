@@ -17,18 +17,3 @@ module one_pulse(
     assign out = ~last_value & in;
 
 endmodule
-
-
-module one_pulse_beat(
-    input clk,
-    input reset,
-    input beat,
-    input in,        // Input, which may go high for more than one cycle
-    output wire out  // Output goes high for one cycle
-);
-
-    wire last_value;
-    dffre last_value_storage_beat(.clk(clk), .r(reset), .en(beat), .d(in), .q(last_value));
-
-    assign out = ~last_value & in;
-endmodule

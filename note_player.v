@@ -5,31 +5,60 @@ module note_player(
     input [5:0] note_to_load,  // The note to play
     input [5:0] duration_to_load,  // The duration of the note to play
     input load_new_note,  // Tells us when we have a new note to load
+    input rewind,
     output done_with_note,  // When we are done with the note this stays high.
     input beat,  // This is our 1/48th second beat
     input generate_next_sample,  // Tells us when the codec wants a new sample
     output [15:0] sample_out,  // Our sample output
     output new_sample_ready  // Tells the codec when we've got a sample
 );
+    //wire first_note;
+    wire [19:0] step_size;
+    wire [5:0] freq_rom_in;
+    //assign first_note = load_new_note;
+    dffre #(.WIDTH(6)) freq_reg (
+        .clk(clk),
+        .r(reset),
+        .en(load_new_note),
+        .d(note_to_load),
+        .q(freq_rom_in)
+    );
 
-    reg [5:0] count;
-    wire [19:0] frequency;
-    frequency_rom note (.clk(clk), .addr(note_to_load), .dout(frequency));
+    frequency_rom freq_rom(
+        .clk(clk),
+        .addr(freq_rom_in),
+        .dout(step_size)
+    );
+
+    sine_reader sine_read(
+        .clk(clk),
+        .reset(reset),
+        .step_size(step_size),
+        .generate_next(play_enable && generate_next_sample),
+        .rewind(rewind),
+        .sample_ready(new_sample_ready),
+        .sample(sample_out)
+    );
+
+    wire [5:0] state, next_state;
+    dffre #(.WIDTH(6)) state_reg (
+        .clk(clk),
+        .r(reset),
+        .en((beat || load_new_note) && play_enable),
+        .d(next_state),
+        .q(state)
+    );
     
-    sine_reader dyd (.clk(clk), .reset(reset), .step_size(frequency), .generate_next(generate_next_sample), .sample_ready(new_sample_ready), .sample(sample_out));
-    
-    always @(*) begin
-        if (beat == 1'b1 && duration_to_load != count) begin
-            count += 1;
-        end else if (duration == count) begin
-            done_with_note = 1'b1;
-            count = 1'b0;
-        end else begin
-            done_with_note = 1'b0;
-        end
-    end
-    
-    
-         
+//    always @(*) begin
+//        if (!first_note) begin
+//            done_with_note = 1'b1;
+//        end else begin
+//            done_with_note = (state == 6'b0) && beat;
+//        end
+//    end
+    assign next_state = (reset || done_with_note || load_new_note)
+                        ? duration_to_load : state - 1;
+
+    assign done_with_note = (state == 6'b0) && beat;
 
 endmodule

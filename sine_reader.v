@@ -3,71 +3,47 @@ module sine_reader(
     input reset,
     input [19:0] step_size,
     input generate_next,
+    input rewind,
 
     output sample_ready,
     output wire [15:0] sample
 );
 
-    wire [15:0] out;
+    //states
+    localparam SWIDTH = 22;
+
+    wire [SWIDTH - 1:0] addr;
+    wire [SWIDTH - 1:0] new_addr;
     
-    reg [21:0] next_address;
-    wire [21:0] address;
-    dffr #(22) counter (.clk(clk), .r(reset), .d(next_address), .q(address));
+    assign new_addr = rewind ? addr - step_size : addr + step_size;
     
-    wire [9:0] address_sine; 
-    sine_rom sines(.clk(clk), .addr(address_sine), .dout(out));
-    
-    always @(*) begin 
-        case (generate_next)
-            1'b1: next_address = address + step_size;
-            default: next_address = address;
-        endcase
-    end 
-    
-    wire [1:0] Q = address[21:20];
-    reg [9:0] raw_address;
-    
-    always @(*) begin
-        casex (Q)
-            2'bx0: raw_address = address[19:10];
-            2'bx1: raw_address = 10'b0 - address[19:10];
-            default: raw_address = address[19:10];
-        endcase
-    end
-    
-    always @(*) begin
-        case (quad_count)
-            2'b00: begin
-                address_sine = raw_address;
-                next_quad_count = 2'b01;
-                sample_ready = 1'b0;
-            end
-            2'b01: begin
-                address_sine = 10'b0 - raw_address;
-                next_quad_count = 2'b10;
-                sample_ready = 1'b0;
-            end
-            2'b10: begin
-                address_sine = raw_address;
-                next_quad_count = 2'b10;
-                sample_ready = 1'b0;
-            end
-            2'b11: begin
-                address_sine = 10'b0 - raw_address;
-                next_quad_count = (generate_next) ? 2'b00 : 2'b11;
-                sample_ready = 1'b1; 
-            default: begin
-                address_sine = raw_address;
-                next_quad_count = 2'b01;
-                sample_ready = 1'b1;
-            end
-        endcase
-    end
-    
-    reg [1:0] next_quad_count;
-    wire [1:0] quad_count;
-    dff #(2) quadrant_count (.clk(clk), .d(next_quad_count), .q(quad_count));
-    
-            assign sample = (Q == 00 || Q == 01) ? out : 15'b0 - out;
+    dffre #(.WIDTH(SWIDTH)) state_reg (
+        .clk(clk),
+        .r(reset),
+        .en(generate_next),
+        .d(new_addr),
+        .q(addr)
+    );
+
+    wire [9:0] sine_rom_addr = addr[20] ? ~addr[19:10] : addr[19:10];
+    wire [15:0] sine_rom_out;
+    sine_rom sineRom (
+        .clk(clk),
+        .addr(sine_rom_addr),
+        .dout(sine_rom_out)
+    );
+    assign sample = addr[21] ? -sine_rom_out : sine_rom_out;
+
+    wire almost_ready;
+    dff #(.WIDTH(1)) ready_1 (
+        .clk(clk),
+        .d(generate_next),
+        .q(almost_ready)
+    );
+    dff #(.WIDTH(1)) ready_2 (
+        .clk(clk),
+        .d(almost_ready),
+        .q(sample_ready)
+    );
 
 endmodule

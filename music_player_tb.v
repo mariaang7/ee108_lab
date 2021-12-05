@@ -1,6 +1,5 @@
 module music_player_tb();
-    reg clk, reset, next_button, play_button, rewind_button, ff_button, temp_button;
-    //reg control_button;
+    reg clk, reset, next_button, play_button;
     wire new_frame;
     wire [15:0] sample;
 
@@ -10,11 +9,7 @@ module music_player_tb();
         .next_button(next_button),
         .play_button(play_button),
         .new_frame(new_frame),
-        .sample_out(sample),
-        .rewind_button(rewind_button),
-        .ff_button(ff_button),
-        .temp_button(temp_button)
-        //.control_button(control_button)
+        .sample_out(sample)
     );
 
     // AC97 interface
@@ -51,12 +46,9 @@ module music_player_tb();
     // Tests
     integer delay;
     initial begin
-        temp_button = 1'b0;
         delay = 2000000;
         play_button = 1'b0;
         next_button = 1'b0;
-        rewind_button = 1'b0;
-        ff_button = 1'b0;
         @(negedge reset);
         @(negedge clk);
 
@@ -123,28 +115,6 @@ module music_player_tb();
             @(negedge clk);
         end
 
-      
-        
-        // Rewind
-        @(negedge clk);
-        rewind_button = 1'b1;
-        @(negedge clk);
-        rewind_button = 1'b0;
-
-        repeat (delay) begin
-            @(negedge clk);
-        end
-        
-        // Fast forward
-        @(negedge clk);
-        ff_button = 1'b1;
-        @(negedge clk);
-        ff_button = 1'b0;
-
-        repeat (delay) begin
-            @(negedge clk);
-        end 
-        
         $finish;
     end
 

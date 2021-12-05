@@ -1,3 +1,4 @@
+
 module lab5_top(
     /*
     'define H_SYNC_PULSE 112
@@ -8,6 +9,13 @@ module lab5_top(
 	'define V_FRONT_PORCH 1
     */ 	  
 
+    // States for control FSM
+    `define STATE_0 3'b000
+    `define STATE_1 3'b001
+    `define STATE_2 3'b010
+    `define STATE_3 3'b011
+    `define STATE_4 3'b100
+    
     // System Clock (125MHz)
     input sysclk,
     	 
@@ -49,8 +57,9 @@ module lab5_top(
   
 );  
 
-    wire reset, play_button, next_button;
-    assign {reset, play_button, next_button} = btn;
+    wire temp_button, play_button, control_button;
+    reg reset, rewind_button, ff_button, display_button, next_button;
+    assign {temp_button, play_button, control_button} = btn;
 
     // Clock converter
     wire clk_100, display_clk, serial_clk;
@@ -110,7 +119,111 @@ module lab5_top(
         .in(next_button),
         .out(next)
     );
-       
+    
+    wire rewind;
+    button_press_unit #(.WIDTH(BPU_WIDTH)) rewind_button_press_unit(
+        .clk(clk_100),
+        .reset(reset),
+        .in(rewind_button),
+        .out(rewind)
+    );
+    
+    wire ff;
+    button_press_unit #(.WIDTH(BPU_WIDTH)) ff_button_press_unit(
+        .clk(clk_100),
+        .reset(reset),
+        .in(ff_button),
+        .out(ff)
+    );
+    
+    wire display;
+    button_press_unit #(.WIDTH(BPU_WIDTH)) displauy_button_press_unit(
+        .clk(clk_100),
+        .reset(reset),
+        .in(display_button),
+        .out(display)
+    );
+    
+    wire control;
+    button_press_unit #(.WIDTH(BPU_WIDTH)) control_button_press_unit(
+        .clk(clk_100),
+        .reset(reset),
+        .in(control_button),
+        .out(control)
+    );
+    
+    wire temp;
+    button_press_unit #(.WIDTH(BPU_WIDTH)) temp_button_press_unit(
+        .clk(clk_100),
+        .reset(reset),
+        .in(temp_button),
+        .out(temp)
+    );
+    
+    
+//   
+//  ****************************************************************************
+//      Control FSM 
+//  ****************************************************************************
+//        
+    
+wire [2:0] state;
+reg [2:0] next_state;
+	
+dff #(3) states(.clk(clk_100), .d(next_state), .q(state));
+	
+always @(*) begin
+	case (state)
+	   `STATE_0: begin
+	       next_state = control_button ? `STATE_1 : `STATE_0;
+	       reset = btn[2];
+	       rewind_button = 0;
+	       ff_button = 0;
+	       display_button = 0;
+	       next_button = 0;
+	   end
+	   `STATE_1: begin
+	       next_state = control_button ? `STATE_2 : `STATE_1;
+	       reset = 0;
+	       rewind_button = 0;
+	       ff_button = 0;
+	       display_button = 0;
+	       next_button = btn[2];
+	   end
+	   `STATE_2: begin
+	       next_state = control_button ? `STATE_3 : `STATE_2;
+	       reset = 0;
+	       rewind_button = btn[2];
+	       ff_button = 0;
+	       display_button = 0;
+	       next_button = 0;
+	   end
+	   `STATE_3: begin
+	       next_state = control_button ? `STATE_4 : `STATE_3;
+	       reset = 0;
+	       rewind_button = 0;
+	       ff_button = btn[2];
+	       display_button = 0;
+	       next_button = 0;
+	   end
+	   `STATE_4: begin
+	       next_state = control_button ? `STATE_0 : `STATE_4;
+	       reset = 0;
+	       rewind_button = 0;
+	       ff_button = 0;
+	       next_button = 0;
+	       display_button = btn[2];
+	   end
+	   default: begin
+	       next_state = `STATE_0;
+	       reset = btn[2];
+	       rewind_button = 0;
+	       ff_button = 0;
+	       display_button = 0;
+	       next_button = 0;
+	   end
+	endcase 
+end 
 //   
 //  ****************************************************************************
 //      The music player
@@ -124,6 +237,8 @@ module lab5_top(
         .reset(reset),
         .play_button(play),
         .next_button(next),
+        .ff_button(ff),
+        .rewind_button(rewind),
         .new_frame(new_frame), 
         .sample_out(codec_sample),
         .new_sample_generated(new_sample)
@@ -249,4 +364,3 @@ module lab5_top(
    
    
 endmodule
-
