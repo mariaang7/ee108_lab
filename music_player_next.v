@@ -112,22 +112,31 @@ wire [5:0] duration_one, duration_two, duration_three;
       `NOTE_ONE: begin
         next_state = `NOTE_TWO;
         note_one = note_to_play;
+        duration_one = duration_for_load;
         note_two = 6'b0;
+        duration_two = 6'b0;
         note_three = 6'b0;
+        duration_three = 6'b0;
         note_sample = 16'b0;
       end 
       `NOTE_TWO: begin
         next_state = `NOTE_THREE;
         note_two = note_to_play;
         note_one = note_one;
+        duration_one = duration_one;
+        duration_two = duration_for_load;
         note_three = 6'b0;
+        duration_three = 6'b0;
         note_sample = 16'b0;
       end 
       `NOTE_THREE: begin
         next_state = `ADVANCE_TIMEE;
         note_two = note_two;
+        duration_one = duration_one;
         note_one = note_one;
+        duration_two = duration_two;
         note_three = note_to_play;
+        duration_three = duration_for_play;
         note_sample = 16'b0;
       end 
       `ADVANCE_TIMEE begin
