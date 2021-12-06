@@ -23,12 +23,13 @@ module music_player(
 
     // Our final output sample to the codec. This needs to be synced to
     // new_frame.
-    output wire [15:0] sample_out
+    output wire [15:0] sample_total_out, sample_one_out, sample_two_out, sample_three_out
+   
 );
     // The BEAT_COUNT is parameterized so you can reduce this in simulation.
     // If you reduce this to 100 your simulation will be 10x faster.
     //parameter BEAT_COUNT = 1000;
-    parameter BEAT_COUNT = 100;
+    parameter BEAT_COUNT = 1000;
 
 
 //
@@ -94,7 +95,6 @@ module music_player(
     wire [15:0] note_sample_one, note_sample_two, note_sample_three;
     wire note_sample_ready_one, note_sample_ready_two, note_sample_ready_three;
     
-    
     note_player note_player_one(
         .clk(clk),
         .reset(reset),
@@ -108,8 +108,6 @@ module music_player(
         .sample_out(note_sample_one),
         .new_sample_ready(note_sample_ready_one)
     );
-    
-    
     
     note_player note_player_two(
         .clk(clk),
@@ -164,7 +162,23 @@ module music_player(
     assign new_sample_generated = generate_next_sample;
     
     wire [15:0] note_sample;
-    assign note_sample = note_sample_one + note_sample_two + note_sample_three;
+//    wire [15:0] sample_one_shifted, sample_two_shifted, sample_three_shifted;
+//    assign sample_one_shifted = note_sample_one >> 2;
+//    assign sample_two_shifted = note_sample_two >> 2;
+//    assign sample_three_shifted = note_sample_three >> 2;
+    
+    wire [15:0] sample_one_f, sample_two_f, sample_three_f;
+    
+    assign sample_one_out = note_sample_one;
+    assign sample_two_out = note_sample_two;
+    assign sample_three_out = note_sample_three;
+    
+    assign sample_one_f = (note_sample_one[15]) ? {2'b11, note_sample_one[15:2]} : {2'b00, note_sample_one[15:2]};
+    assign sample_two_f = (note_sample_two[15]) ? {2'b11, note_sample_two[15:2]} : {2'b00, note_sample_two[15:2]};
+    assign sample_three_f = (note_sample_three[15]) ? {2'b11, note_sample_three[15:2]} : {2'b00, note_sample_three[15:2]};
+   
+
+    assign note_sample = sample_one_f + sample_two_f + sample_three_f;
     
     codec_conditioner codec_conditioner(
         .clk(clk),
@@ -173,7 +187,7 @@ module music_player(
         .latch_new_sample_in(note_sample_ready),
         .generate_next_sample(generate_next_sample),
         .new_frame(new_frame),
-        .valid_sample(sample_out)
+        .valid_sample(sample_total_out)
     );
 
 endmodule
