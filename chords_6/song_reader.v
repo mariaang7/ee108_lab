@@ -69,7 +69,7 @@ module song_reader(
             `PAUSED: 
                 begin            
                     next = play ? (msb ? `ADVANCE_TIME : `NOTE_1) : `PAUSED;
-                    increment = 1'b0;
+                    increment = play ? 1'b1 : 1'b0;
                     notes_out = 18'b0;
                     durations_out = 18'b0;
                 end
@@ -98,9 +98,10 @@ module song_reader(
                 begin
                     next = play ? (advance_done ? `NOTE_1 : `ADVANCE_TIME) : `PAUSED ;
                     advance_duration = curr_duration;
-                    notes_out = new_note ? {note_one, note_two, note_three} : 18'b0;
-                    durations_out = new_note ? {duration_one, duration_two, duration_three} : 18'b0;
+                    notes_out = {note_one, note_two, note_three};
+                    durations_out = {duration_one, duration_two, duration_three};
                     increment = advance_done ? 1'b1 : 1'b0;
+             
                 end
             default:
                 begin
@@ -119,11 +120,11 @@ module song_reader(
         .q(advance_t)
     );
     assign next_advance_t = (reset || advance_done)
-                        ? advance_duration - 6'b1 : (beat ? advance_t - 6'b1 : advance_t);
+                        ? advance_duration : (beat ? advance_t - 1 : advance_t);
 
     assign advance_done = (advance_t == 6'b0);
 
-    assign new_note  = (advance_t == advance_duration - 1'b1 && (state == `ADVANCE_TIME)) ? 1'b1 : 1'b0;
+    assign new_note  = (advance_t == advance_duration && (state == `ADVANCE_TIME)) ? 1'b1 : 1'b0;
     
     always @(*) begin
         case(song)
@@ -136,3 +137,4 @@ module song_reader(
        
 
 endmodule
+
