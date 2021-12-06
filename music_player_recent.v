@@ -19,8 +19,8 @@ module music_player(
     input new_frame,
 
     // Buttons for rewind and fastforward (playback control)
-    input rewind_button,
-    input ff_button,
+    //input rewind_button,
+    //input ff_button,
     // This output must go high for one cycle when a new sample is generated.
     output wire new_sample_generated,
 
@@ -51,8 +51,8 @@ module music_player(
         .reset(reset),
         .play_button(play_button),
         .next_button(next_button),
-        .rewind_button(rewind_button),
-        .ff_button(ff_button),
+        //.rewind_button(rewind_button),
+        //.ff_button(ff_button),
         .play(play),
         .reset_player(reset_player),
         .song(current_song),
@@ -64,14 +64,6 @@ module music_player(
 //      Song Reader
 //  ****************************************************************************
 //
-    wire [5:0] note_to_play;
-    wire [5:0] duration_for_note;
-    wire new_note;
-    wire note_done;
-
-
-
-      
 //   
 //  ****************************************************************************
 //      Beat Generator
@@ -82,7 +74,7 @@ module music_player(
 //  
     wire beat;
     wire generate_next_sample;
-    beat_generator #(.WIDTH(10), .STOP(BEAT_COUNT)) beat_generator(
+    beat_generator #(.WIDTH(100), .STOP(BEAT_COUNT)) beat_generator(
         .clk(clk),
         .reset(reset),
         .en(generate_next_sample),
@@ -93,7 +85,6 @@ wire note_one_done, note_two_done, note_three_done;
 wire [5:0] note_one, note_two, note_three;
 wire [5:0] duration_one, duration_two, duration_three;
 wire new_note_one, new_note_two, new_note_three;
-
 
 
 song_reader songsss(
@@ -116,11 +107,11 @@ song_reader songsss(
     .new_note_two(new_note_two),
     .new_note_three(new_note_three)
 );
-//   
+   
 //  ****************************************************************************
 //      Note Player
 //  ****************************************************************************
-//  
+  
 
    
     wire note_sample_ready;
@@ -128,10 +119,7 @@ song_reader songsss(
     wire [15:0] sample_one;
     wire [15:0] sample_two;
     wire [15:0] sample_three;
-
-    wire signed [15:0] one;
-    wire signed [15:0] two;
-    wire signed [15:0] three;
+    
     wire signed [15:0] note_sample;
     
     
@@ -146,8 +134,8 @@ song_reader songsss(
         .beat(beat),
         .generate_next_sample(generate_next_sample),
         .sample_out(sample_one),
-        .new_sample_ready(note_sample_ready),
-        .rewind(rewind_button)
+        .new_sample_ready(note_sample_ready)
+        //.rewind(rewind_button)
     );
     
         note_player note_player_2(
@@ -161,8 +149,8 @@ song_reader songsss(
         .beat(beat),
         .generate_next_sample(generate_next_sample),
         .sample_out(sample_two),
-        .new_sample_ready(note_sample_ready),
-        .rewind(rewind_button)
+        .new_sample_ready(note_sample_ready)
+        //.rewind(rewind_button)
     );
     
         note_player note_player_3(
@@ -176,14 +164,11 @@ song_reader songsss(
         .beat(beat),
         .generate_next_sample(generate_next_sample),
         .sample_out(sample_three),
-        .new_sample_ready(note_sample_ready),
-        .rewind(rewind_button)
+        .new_sample_ready(note_sample_ready)
+        //.rewind(rewind_button)
     );
-    
-assign one = sample_one >>> 2;
-assign two = sample_two >>> 2;
-assign three = sample_three >>> 2; 
-assign note_sample = one + two + three;
+
+assign note_sample = sample_one>>2 + sample_two>>2 + sample_three>>2;
 
 //  
 //  ****************************************************************************
