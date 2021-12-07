@@ -117,10 +117,13 @@ module lab5_top(
     
     reg wd0, wd1, wd2;
     reg ff_button, rewind_button;
+    wire waves_all;
+	assign waves_all = (sw == 2'b10) ? 1'b1 : 1'b1;
     always @(*) begin
         case(sw)
         2'b00: {reset, play_button, next_button} = btn[3:1];
         2'b01: {reset, wd0, wd1, wd2} = btn;
+	2'b10: {reset, play_button, next_button} = btn[3:1];
         2'b11: {reset, play_button, rewind_button, ff_button} = btn;
         endcase
       end
@@ -190,7 +193,7 @@ module lab5_top(
 //  ****************************************************************************
 //       
     wire new_frame;
-    wire [15:0] codec_sample, flopped_sample;
+	wire [15:0] codec_sample, flopped_sample, sample_one, sample_two, sample_three;
     wire new_sample, flopped_new_sample;
     music_player #(.BEAT_COUNT(BEAT_COUNT)) music_player(
         .clk(clk_100),
@@ -200,7 +203,10 @@ module lab5_top(
         .rewind_button(rewind),
         .ff_button(ff),
         .new_frame(new_frame), 
-        .sample_out(codec_sample),
+	    .sample_out(codec_sample),
+	    .sample_one(sample_one),
+	    .sample_two(sample_two),
+	    .sample_three(sample_three),
         .new_sample_generated(new_sample)
     );
     dff #(.WIDTH(17)) sample_reg (
@@ -290,6 +296,7 @@ module lab5_top(
         .btn0(btn0),
         .btn1(btn1),
         .btn2(btn2),
+	    .waves_all(waves_all),
         //.valid(valid),
 		.valid(vde),
 		.vsync(vsync),
