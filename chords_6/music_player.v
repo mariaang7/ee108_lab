@@ -178,7 +178,7 @@ module music_player(
     assign sample_three_f = (note_sample_three[15]) ? {2'b11, note_sample_three[15:2]} : {2'b00, note_sample_three[15:2]};
    
 
-    assign note_sample = sample_one_f + sample_two_f + sample_three_f;
+    //assign note_sample = sample_one_f + sample_two_f + sample_three_f;
     
     //------------ tremolo ---------------------
     
@@ -190,7 +190,7 @@ module music_player(
     wire echo2, next_echo;
     dffre echo2 #(4) (.clk(clk), .r(reset), .en(echo), .d(next_echo), .q(echo2));
     assign next_echo = (echo2 == 0) ? 1'b1 : echo2 - 1;
-    assign note_sample = echo2 ? 16'b0 : note_sample;
+    assign note_sample = echo2 ? 16'b0 : sample_one_f + sample_two_f + sample_three_f;
     
     //-------------------------------------------
     
