@@ -180,6 +180,20 @@ module music_player(
 
     assign note_sample = sample_one_f + sample_two_f + sample_three_f;
     
+    //------------ tremolo ---------------------
+    
+    wire [3:0] state, next_state;
+    wire echo;
+    dffre echo #(4) (.clk(clk), .r(reset), .en(beat), .d(next_state), .q(state));
+    assign next_state = (state == 0) ? 4'd10 : state - 1;
+    assign echo = (state == 0);
+    wire echo2, next_echo;
+    dffre echo2 #(4) (.clk(clk), .r(reset), .en(echo), .d(next_echo), .q(echo2));
+    assign next_echo = (echo2 == 0) ? 1'b1 : echo2 - 1;
+    assign note_sample = echo2 ? 16'b0 : note_sample;
+    
+    //-------------------------------------------
+    
     codec_conditioner codec_conditioner(
         .clk(clk),
         .reset(reset),
