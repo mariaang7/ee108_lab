@@ -18,8 +18,8 @@ module wave_display_top(
     output [7:0] b
 );
 
-    wire [7:0] read_sample, write_sample;
-    wire [8:0] read_address, write_address;
+    wire [7:0] read_sample_all, write_sample_all, read_sample_one, write_sample_one, read_sample_two, write_sample_two, read_sample_three, write_sample_three;
+    wire [8:0] read_address_all, write_address_all, read_address_one, write_address_one, read_address_two, write_address_two, read_address_three, write_address_three;
     wire read_index;
     wire write_en;
     wire wave_display_idle = ~vsync;
@@ -29,9 +29,9 @@ module wave_display_top(
         .reset(reset),
         .new_sample_ready(new_sample),
       .new_sample_in(sample_all),
-        .write_address(write_address),
+        .write_address(write_address_all),
         .write_enable(write_en),
-        .write_sample(write_sample),
+        .write_sample(write_sample_all),
         .wave_display_idle(wave_display_idle),
         .read_index(read_index)
     );
@@ -41,9 +41,9 @@ module wave_display_top(
         .reset(reset),
         .new_sample_ready(new_sample),
         .new_sample_in(sample_one),
-        .write_address(write_address),
+          .write_address(write_address_one),
         .write_enable(write_en),
-        .write_sample(write_sample),
+          .write_sample(write_sample_one),
         .wave_display_idle(wave_display_idle),
         .read_index(read_index)
     );
@@ -53,9 +53,9 @@ module wave_display_top(
         .reset(reset),
         .new_sample_ready(new_sample),
         .new_sample_in(sample_two),
-        .write_address(write_address),
+          .write_address(write_address_two),
         .write_enable(write_en),
-        .write_sample(write_sample),
+          .write_sample(write_sample_two),
         .wave_display_idle(wave_display_idle),
         .read_index(read_index)
     );
@@ -65,9 +65,9 @@ module wave_display_top(
         .reset(reset),
         .new_sample_ready(new_sample),
         .new_sample_in(sample_three),
-        .write_address(write_address),
+          .write_address(write_address_three),
         .write_enable(write_en),
-        .write_sample(write_sample),
+          .write_sample(write_sample_three),
         .wave_display_idle(wave_display_idle),
         .read_index(read_index)
     );
@@ -87,6 +87,7 @@ module wave_display_top(
     wire [10:0] start_x,end_x;
     wire [9:0] start_y,end_y;
     wire [2:0] display;
+    wire sample_num; 
     
     wf_limits wf_limits_wd_top (
         .clk(clk),
