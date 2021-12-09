@@ -27,15 +27,15 @@ module wf_limits(
   wire [9:0] max_start_y, max_end_y;
     
   //new default display
-  assign default_start_x  = 11'd188;
-  assign default_end_x = 11'd788;
+  assign default_start_x  = 11'd380;
+  assign default_end_x = 11'd640;
   assign default_start_y = 10'd92;
   assign default_end_y = 10'd452;
   
   //max display
   assign max_start_x = 11'd88;
   assign max_end_x = 11'd888;
-  assign max_start_y = 10'd32;
+  assign max_start_y = 10'd30;
   assign max_end_y = 10'd512;
  
   reg [2:0] next_state;
@@ -66,29 +66,29 @@ module wf_limits(
       end
       4'b0001: begin    //Stage1
         next_state = (btns == 3'b010) ? `STAGE2 : ((btns == 3'b100 || btns == 3'b001) ? `DEFAULT_DISPLAY : `STAGE1);
-        start_x = 11'd168;
-        end_x = 11'd808;
+        start_x = 11'd360;
+        end_x = 11'd660;
         start_y = 10'd80;
         end_y = 10'd464;
       end
       4'b0010: begin   //Stage 2
         next_state = (btns == 3'b010) ? `STAGE3 : ((btns == 3'b001) ? `STAGE1 : ((btns == 3'b100) ? `DEFAULT_DISPLAY : `STAGE2));
-        start_x = 11'd148;
-        end_x = 11'd828;
+        start_x = 11'd340;
+        end_x = 11'd680;
         start_y = 10'd68;
         end_y = 10'd476;
       end
       4'b0011: begin    //Stage 3
         next_state = (btns == 3'b010) ? `STAGE4 : ((btns == 3'b001) ? `STAGE2 : ((btns == 3'b100) ? `DEFAULT_DISPLAY : `STAGE3));
-        start_x = 11'd128;
-        end_x = 11'd848;
+        start_x = 11'd320;
+        end_x = 11'd700;
         start_y = 10'd56;
         end_y = 10'd488;
       end
       4'b0100: begin   //Stage 4
         next_state = (btns == 3'b010) ? `FULL_SCREEN : ((btns == 3'b001) ? `STAGE3 : ((btns == 3'b100) ?`DEFAULT_DISPLAY : `STAGE4));
-        start_x = 11'd108;
-        end_x = 11'd868;
+        start_x = 11'd300;
+        end_x = 11'd720;
         start_y = 10'd44;
         end_y = 10'd500;
       end
