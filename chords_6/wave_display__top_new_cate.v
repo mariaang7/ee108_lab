@@ -101,10 +101,20 @@ module wave_display_top(
         .end_y(end_y),
         .display(display)
 );
-    
- 
+    wire y_size;
+    wire screen_quarter;
+    assign screen_quarter = y_size / 4;
+    wire [7:0] r_one, r_two, r_three, r_all, g_one, g_two, g_three, g_all, b_one, b_two, b_three, b_all;
     wire valid_pixel;
-    wire [7:0] wd_r, wd_g, wd_b;
+    wire [9:0] start_y_one, start_y_two, start_y_three, start_y_all, end_y_one, end_y_two, end_y_three, end_y_all;
+    assign {start_y_one, end_y_one} = {start_y, (start_y + screen_quarter)};
+    assign {start_y_two, end_y_two} = {start_y, (end_y_one +  (2 * screen_quarter))};
+    assign {start_y_three, end_y_three} = {start_y, (end_y_two + (3 * screen_quarter))};
+    assign {start_y_all, end_y_all} = {start_y, (end_y_three + end_y)};
+    reg [7:0] red, green, blue;
+    
+    
+    //wire [7:0] wd_r, wd_g, wd_b;
     wave_display wd_all(
         .clk(clk),
         .reset(reset),
@@ -116,11 +126,11 @@ module wave_display_top(
         .read_index(read_index),
         .start_x(start_x),
         .end_x(end_x),
-        .start_y(start_y),
-        .end_y(end_y),
+        .start_y(start_y_all),
+        .end_y(end_y_all),
         .display(display),
         .valid_pixel(valid_pixel),
-        .r(wd_r), .g(wd_g), .b(wd_b)
+        .r(r_all), .g(g_all), .b(b_all)
     );
   
       wave_display wd_one(
@@ -134,11 +144,11 @@ module wave_display_top(
         .read_index(read_index),
         .start_x(start_x),
         .end_x(end_x),
-        .start_y(start_y),
-        .end_y(end_y),
+          .start_y(start_y_one),
+          .end_y(end_y_one),
         .display(display),
         .valid_pixel(valid_pixel),
-        .r(wd_r), .g(wd_g), .b(wd_b)
+          .r(r_one), .g(g_one), .b(b_one)
     );
   
       wave_display wd_two(
@@ -152,11 +162,11 @@ module wave_display_top(
         .read_index(read_index),
         .start_x(start_x),
         .end_x(end_x),
-        .start_y(start_y),
-        .end_y(end_y),
+          .start_y(start_y_two),
+          .end_y(end_y_two),
         .display(display),
         .valid_pixel(valid_pixel),
-        .r(wd_r), .g(wd_g), .b(wd_b)
+          .r(r_two), .g(g_two), .b(b_two)
     );
   
       wave_display wd_three(
@@ -170,13 +180,28 @@ module wave_display_top(
         .read_index(read_index),
         .start_x(start_x),
         .end_x(end_x),
-        .start_y(start_y),
-        .end_y(end_y),
+          .start_y(start_y_three),
+          .end_y(end_y_three),
         .display(display),
         .valid_pixel(valid_pixel),
-        .r(wd_r), .g(wd_g), .b(wd_b)
+          .r(t_three), .g(g_three), .b(b_three)
     );
+    
+    always @(*) begin
+        if (x > start_x && x < end_x && y > start_y_one && y < end_y_one) begin
+            {red, green, blue} = {r_one, g_one, b_one};
+        end else if (x > start_x && x < end_x && y > start_y_two && y < end_y_two) begin
+            {red, green, blue} = {r_two, g_two, b_two};
+        end else if (x > start_x && x < end_x && y > start_y_three && y < end_y_three) begin
+            {red, green, blue} = {r_three, g_three, b_three};
+        end else if (x > start_x && x < end_x && y > start_y_all && y < end_y_all) begin
+            {red, green, blue} = {r_all, g_all, b_all};
+        end else begin
+            {red, green, blue} = 24'h000000;
+        end
+    end
+        
 
-    assign {r, g, b} = valid_pixel ? {wd_r, wd_g, wd_b} : {3{8'b0}};
+    assign {r, g, b} = valid_pixel ? {red, green, blue} : {3{8'b0}};
 
 endmodule
