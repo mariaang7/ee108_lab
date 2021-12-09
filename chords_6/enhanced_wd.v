@@ -81,6 +81,7 @@ module wave_display (
     
    
     //assign {r,g,b} = (magn_valid)? 24'h0000f0 : 24'hffffff;
-    assign {r,g,b}= (x > start_x && x < end_x && y > start_y && y < end_y) ? (magn_valid ? 24'hffffff : 24'h000000) : 24'hffffff;//
+    //assign {r,g,b}= (x > start_x && x < end_x && y > start_y && y < end_y) ? (magn_valid ? 24'hffffff : 24'h000000) : 24'hffffff;//
+    assign {r,g,b} = magn_valid ? 24'hffffff : 24'h000000;
 
 endmodule
